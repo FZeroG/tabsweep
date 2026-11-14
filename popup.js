@@ -1,0 +1,176 @@
+import { getSettings, saveSettings, normalizeDomain, findSite, isTooBroad } from "./lib/sites.js";
+import { el, modeSeg, modeName, monogram, setMsg, runSweep, siteChips } from "./lib/ui.js";
+import { t, tNodes, localize, initI18n } from "./lib/i18n.js";
+
+const $ = (id) => document.getElementById(id);
+
+await initI18n();
+localize();
+// เก็บ element ไว้ในตัวแปรเลย ไม่ต้องหาจาก id ทีหลัง (กัน null ถ้า DOM ไม่ตรง)
+const countEl = el("b", {}, "0");
+const deletedEl = el("b", {}, "0");
+$("footerStats").replaceChildren(...tNodes("footerStats", countEl, deletedEl));
+
+let tabUrl = null;
+
+async function updateSites(fn) {
+  const { sites } = await getSettings();
+  await saveSettings({ sites: fn(sites) });
+}
+
+function renderNotWeb(card) {
+  card.append(
+    el("div", { class: "site-head" },
+      monogram("·"),
+      el("div", { class: "info" },
+        el("div", { class: "site-domain" }, t("notWebTitle")),
+        el("div", { class: "muted", style: "font-size:12px" }, t("notWebHint"))
+      )
+    )
+  );
+}
+
+function renderTracked(card, site) {
+  card.append(
+    el("div", { class: "site-head" },
+      monogram(site.domain, site.mode),
+      el("div", { class: "info" },
+        el("div", { class: "site-domain", title: site.domain }, site.domain),
+        el("div", {}, el("span", { class: `pill ${site.mode}` }, t("inListPill", modeName(site.mode))))
+      )
+    ),
+    modeSeg(site.mode, (mode) =>
+      updateSites((list) => list.map((s) => (s.domain === site.domain ? { ...s, mode } : s)))
+    ),
+    el("div", { class: "site-foot" },
+      el("span", { class: "muted mono", style: "font-size:11.5px" }, `+ *.${site.domain}`),
+      el("button", {
+        class: "link danger",
+        onclick: () => updateSites((list) => list.filter((s) => s.domain !== site.domain)),
+      }, t("removeFromList"))
+    )
+  );
+}
+
+function renderUntracked(card, suggested) {
+  const input = el("input", {
+    class: "input",
+    value: suggested ?? "",
+    spellcheck: "false",
+    "aria-label": "Domain",
+    placeholder: "example.com",
+  });
+  const seg = modeSeg("visit");
+  const msg = el("div", { class: "msg" });
+
+  const add = async () => {
+    const domain = normalizeDomain(input.value);
+    if (!domain) return setMsg(msg, t("invalidDomain"), "err");
+    if (isTooBroad(domain)) return setMsg(msg, t("domainTooBroad", domain), "err");
+    await updateSites((list) => [...list.filter((s) => s.domain !== domain), { domain, mode: seg.getValue() }]);
+  };
+  input.addEventListener("keydown", (e) => e.key === "Enter" && add());
+
+  card.append(
+    el("div", { class: "site-head" },
+      monogram(suggested),
+      el("div", { class: "info" },
+        el("div", { class: "site-domain", title: suggested ?? "" }, suggested ?? "—"),
+        el("div", {}, el("span", { class: "pill" }, t("notInListPill")))
+      )
+    ),
+    seg,
+    el("div", { class: "site-actions" }, input, el("button", { class: "btn btn-ink", onclick: add }, t("add"))),
+    msg
+  );
+}
+
+async function render() {
+  const { sites } = await getSettings();
+  countEl.textContent = sites.length;
+  $("sweepBtn").disabled = sites.length === 0;
+  $("targets").replaceChildren(
+    sites.length ? siteChips(sites, 5) : el("span", { class: "muted" }, t("noSites"))
+  );
+
+  const card = $("siteCard");
+  card.replaceChildren();
+
+  if (!tabUrl || !/^https?:/i.test(tabUrl)) return renderNotWeb(card);
+  const site = findSite(tabUrl, sites);
+  if (site) renderTracked(card, site);
+  else renderUntracked(card, normalizeDomain(tabUrl));
+}
+
+$("sweepBtn").addEventListener("click", () => runSweep($("sweepBtn"), $("result")));
+for (const id of ["optionsBtn", "manageBtn"]) {
+  $(id).addEventListener("click", () => chrome.runtime.openOptionsPage());
+}
+chrome.storage.onChanged.addListener((changes, area) => {
+  if (area === "local") render();
+  if (area === "session" && changes.deletedCount) renderDeleted(changes.deletedCount.newValue);
+  if (area === "session" && changes.lastEvent?.newValue) showBanner(changes.lastEvent.newValue, false);
+});
+
+// ---------- แบนเนอร์ "ลบแล้ว" (ตอน extension เปิด popup เองหลังลบ) ----------
+
+const REASON = { visit: "reasonVisit", close: "reasonClose", boot: "reasonBoot", test: "reasonTest" };
+const AUTO_CLOSE_MS = 4000;
+let closeTimer = 0;
+
+function checkIcon() {
+  const ns = "http://www.w3.org/2000/svg";
+  const svg = document.createElementNS(ns, "svg");
+  svg.setAttribute("viewBox", "0 0 24 24");
+  svg.setAttribute("aria-hidden", "true");
+  const path = document.createElementNS(ns, "path");
+  path.setAttribute("d", "M5 12.5l4.2 4.2L19 7");
+  svg.append(path);
+  return svg;
+}
+
+function showBanner(ev, autoClose) {
+  const total = ev.items.reduce((n, i) => n + i.count, 0);
+  const banner = $("banner");
+  const bar = el("div", { class: "banner-bar" });
+  banner.replaceChildren(
+    el("div", { class: "banner-check" }, checkIcon()),
+    el("div", { class: "banner-title" }, t("bannerTitle", total.toLocaleString())),
+    el("div", { class: "banner-sub" }, REASON[ev.reason] ? t(REASON[ev.reason]) : ""),
+    el("div", { class: "chips" },
+      ...ev.items.map((i) => el("span", { class: "chip" }, el("span", { class: "dot" }), `${i.domain} · ${i.count}`))
+    ),
+    autoClose ? bar : null
+  );
+  banner.hidden = false;
+  banner.classList.remove("pop");
+  void banner.offsetWidth; // restart animation
+  banner.classList.add("pop");
+
+  clearTimeout(closeTimer);
+  if (!autoClose) return;
+  // ปิดเองใน 4 วิ — แต่ถ้าผู้ใช้เอาเมาส์มาชี้/กดอะไร ถือว่าอยากใช้ต่อ ไม่ปิด
+  bar.style.animationDuration = `${AUTO_CLOSE_MS}ms`;
+  document.body.classList.add("announce"); // โชว์แค่แบนเนอร์ให้กะทัดรัด
+  closeTimer = setTimeout(() => window.close(), AUTO_CLOSE_MS);
+  const keep = () => {
+    clearTimeout(closeTimer);
+    bar.remove();
+    document.body.classList.remove("announce");
+  };
+  for (const evt of ["pointerover", "pointerdown", "keydown"]) {
+    document.addEventListener(evt, keep, { once: true });
+  }
+}
+
+const { lastEvent } = await chrome.storage.session.get("lastEvent");
+if (lastEvent && Date.now() - lastEvent.at < 6000) showBanner(lastEvent, true);
+
+function renderDeleted(n) {
+  deletedEl.textContent = (n ?? 0).toLocaleString();
+}
+chrome.storage.session.get("deletedCount").then((r) => renderDeleted(r.deletedCount));
+
+const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+tabUrl = tab?.url ?? null;
+await render();

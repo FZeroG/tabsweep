@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>TabSweep – Privacy Policy</title>
+  <style>
+    :root { --bg:#f2f0ea; --sheet:#fbfaf6; --ink:#17171b; --ink2:#4a4a52; --line:#dcd8cd; --hot:#e8461b; color-scheme: light dark; }
+    @media (prefers-color-scheme: dark) { :root { --bg:#111114; --sheet:#19191d; --ink:#ecebe6; --ink2:#b4b3ae; --line:#2a2a30; --hot:#ff6a3d; } }
+    * { box-sizing: border-box; }
+    body { margin:0; background:var(--bg); color:var(--ink); font:16px/1.65 "Segoe UI","Leelawadee UI",Tahoma,sans-serif; }
+    main { max-width:760px; margin:0 auto; padding:40px 16px 64px; }
+    h1 { font-size:30px; margin:0 0 4px; }
+    h2 { font-size:19px; margin:32px 0 8px; padding-top:20px; border-top:1px solid var(--line); }
+    .meta { color:var(--ink2); font-size:14px; }
+    .lang { margin:16px 0 28px; font-size:14px; }
+    .card { background:var(--sheet); border:1px solid var(--line); border-left:4px solid var(--hot); border-radius:10px; padding:14px 16px; margin:16px 0; }
+    table { width:100%; border-collapse:collapse; font-size:15px; }
+    th, td { text-align:left; padding:8px 6px; border-bottom:1px solid var(--line); vertical-align:top; }
+    code { font-family:"Cascadia Mono",Consolas,monospace; font-size:.92em; }
+    a { color:var(--hot); }
+    section + section { margin-top:56px; }
+  </style>
+</head>
+<body>
+<main>
+  <h1>TabSweep: Site History Cleaner</h1>
+  <p class="meta">Privacy Policy · นโยบายความเป็นส่วนตัว — Effective / มีผลตั้งแต่: 15 November 2026</p>
+  <p class="lang"><a href="#en">English</a> · <a href="#th">ภาษาไทย</a></p>
+
+  <section id="en" lang="en">
+    <div class="card"><strong>Summary:</strong> TabSweep runs entirely on your device. It does not collect, send, sell or share any data. There are no servers, analytics, ads or third-party code.</div>
+
+    <h2>What the extension accesses</h2>
+    <table>
+      <tr><th>Data</th><th>Why</th><th>Where it stays</th></tr>
+      <tr><td>Browsing history (<code>history</code> permission)</td><td>To find and delete history entries of the sites you added to your list. Entries of other sites are read only to check the address and are never changed or stored.</td><td>Not stored by TabSweep</td></tr>
+      <tr><td>Addresses of open tabs (<code>tabs</code> permission)</td><td>To know when you close the last tab of a listed site, so it can delete that site's history ("Delete on tab close"), and to show the current site in the popup. Addresses of other sites are only compared, never kept.</td><td>Only the domain names of listed sites (with the time a tab opened them) are kept, in browser session storage; cleared when the browser closes</td></tr>
+      <tr><td>Your site list and settings</td><td>To remember which sites to clean and how.</td><td>On your device only (<code>chrome.storage.local</code>); not synced to any account</td></tr>
+      <tr><td>A count of deleted items</td><td>To show the number on the toolbar icon.</td><td>Session storage; cleared when the browser closes</td></tr>
+    </table>
+
+    <h2>What the extension does not do</h2>
+    <ul>
+      <li>It does not send any data over the network. It makes no network requests at all.</li>
+      <li>It does not share or sell data to anyone, and has no analytics or tracking.</li>
+      <li>It does not read page content, passwords, cookies or form data.</li>
+      <li>It does not load or run remote code.</li>
+      <li>It does not delete data held by websites or online accounts (for example Google or Microsoft account activity).</li>
+    </ul>
+
+    <h2>Your control</h2>
+    <p>You can edit or clear your site list at any time in the extension's settings. Removing the extension deletes everything it stored.</p>
+
+    <h2>Changes</h2>
+    <p>If this policy changes, the new version will be posted on this page with a new effective date.</p>
+
+    <h2>Contact</h2>
+    <p>Questions or problems: <a href="https://github.com/FZeroG/tabsweep/issues">GitHub Issues</a></p>
+  </section>
+
+  <section id="th" lang="th">
+    <div class="card"><strong>สรุป:</strong> TabSweep ทำงานในเครื่องของคุณทั้งหมด ไม่เก็บ ไม่ส่ง ไม่ขาย และไม่แชร์ข้อมูลใดๆ ไม่มีเซิร์ฟเวอร์ ไม่มีระบบวิเคราะห์ ไม่มีโฆษณา และไม่มีโค้ดของบุคคลที่สาม</div>
+
+    <h2>ข้อมูลที่ extension เข้าถึง</h2>
+    <table>
+      <tr><th>ข้อมูล</th><th>ใช้ทำอะไร</th><th>เก็บที่ไหน</th></tr>
+      <tr><td>ประวัติการเข้าเว็บ (สิทธิ์ <code>history</code>)</td><td>เพื่อค้นหาและลบประวัติของเว็บที่คุณเพิ่มไว้ในรายการ ประวัติของเว็บอื่นจะถูกอ่านแค่เพื่อเช็คที่อยู่เว็บ ไม่มีการแก้ไขหรือจัดเก็บ</td><td>TabSweep ไม่ได้เก็บ</td></tr>
+      <tr><td>ที่อยู่เว็บของแท็บที่เปิดอยู่ (สิทธิ์ <code>tabs</code>)</td><td>เพื่อรู้ว่าคุณปิดแท็บสุดท้ายของเว็บในรายการแล้ว จะได้ลบประวัติของเว็บนั้น (โหมด "ลบตอนปิดแท็บ") และเพื่อแสดงเว็บปัจจุบันใน popup ที่อยู่ของเว็บอื่นใช้แค่เทียบ ไม่เก็บไว้</td><td>เก็บเฉพาะชื่อโดเมนของเว็บในรายการ (กับเวลาที่แท็บเปิดเว็บนั้น) ใน session ของ browser ล้างเองเมื่อปิด browser</td></tr>
+      <tr><td>รายการเว็บและการตั้งค่าของคุณ</td><td>เพื่อจำว่าต้องลบเว็บไหน และลบแบบไหน</td><td>ในเครื่องของคุณเท่านั้น (<code>chrome.storage.local</code>) ไม่ sync ขึ้นบัญชีใด</td></tr>
+      <tr><td>จำนวนรายการที่ลบไปแล้ว</td><td>เพื่อแสดงตัวเลขบนไอคอน</td><td>session storage ล้างเองเมื่อปิด browser</td></tr>
+    </table>
+
+    <h2>สิ่งที่ extension ไม่ทำ</h2>
+    <ul>
+      <li>ไม่ส่งข้อมูลใดๆ ผ่านเครือข่าย และไม่มีการเชื่อมต่อเครือข่ายเลย</li>
+      <li>ไม่แชร์หรือขายข้อมูลให้ใคร ไม่มีระบบวิเคราะห์หรือติดตามผู้ใช้</li>
+      <li>ไม่อ่านเนื้อหาหน้าเว็บ รหัสผ่าน cookies หรือข้อมูลในฟอร์ม</li>
+      <li>ไม่โหลดหรือรันโค้ดจากภายนอก</li>
+      <li>ไม่ลบข้อมูลที่เว็บไซต์หรือบัญชีออนไลน์เก็บไว้ (เช่น กิจกรรมในบัญชี Google หรือ Microsoft)</li>
+    </ul>
+
+    <h2>สิทธิ์ของคุณ</h2>
+    <p>แก้ไขหรือล้างรายการเว็บได้ตลอดเวลาในหน้าตั้งค่าของ extension และเมื่อถอนการติดตั้ง ข้อมูลทั้งหมดที่ extension เก็บไว้จะถูกลบไปด้วย</p>
+
+    <h2>การเปลี่ยนแปลง</h2>
+    <p>หากนโยบายนี้มีการเปลี่ยนแปลง จะประกาศเวอร์ชันใหม่ในหน้านี้พร้อมวันที่มีผลใหม่</p>
+
+    <h2>ติดต่อ</h2>
+    <p>สอบถามหรือแจ้งปัญหา: <a href="https://github.com/FZeroG/tabsweep/issues">GitHub Issues</a></p>
+  </section>
+</main>
+</body>
+</html>

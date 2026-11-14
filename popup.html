@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>TabSweep</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="popup">
+  <header>
+    <p class="wordmark"><span>Tab</span><span class="redact">Sweep</span></p>
+    <button id="optionsBtn" class="btn btn-ghost btn-icon" data-i18n-attr="title:openSettings;aria-label:openSettings">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M4 7h10M18 7h2M4 17h4M12 17h8"/>
+        <circle cx="16" cy="7" r="2"/>
+        <circle cx="10" cy="17" r="2"/>
+      </svg>
+    </button>
+  </header>
+
+  <main>
+    <section id="banner" class="banner" role="status" aria-live="polite" hidden></section>
+    <section id="siteCard" class="site-card rise" aria-live="polite"></section>
+
+    <div class="rise sweep-box">
+      <div class="sweep-label muted" data-i18n="sweepTargetsLabel"></div>
+      <div id="targets"></div>
+      <button id="sweepBtn" class="btn btn-ink btn-sweep" data-i18n="sweepAllShort"></button>
+      <div id="result" class="msg" role="status"></div>
+    </div>
+  </main>
+
+  <footer>
+    <span id="footerStats"></span>
+    <button id="manageBtn" class="link" data-i18n="manageList"></button>
+  </footer>
+
+  <script type="module" src="popup.js"></script>
+</body>
+</html>
