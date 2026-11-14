@@ -1,100 +1,92 @@
-# TabSweep: Site History Cleaner (Microsoft Edge, Manifest V3)
+# TabSweep
 
-ลบประวัติ (history) เฉพาะเว็บที่กำหนด — UI ภาษาไทย/อังกฤษ ตามภาษาของ browser
-(ชื่อเดิม: History Cleaner — โฟลเดอร์ยังชื่อ `HistoryCleaner`)
+A small Edge extension that keeps the sites you pick out of your browsing history.
 
-## ติดตั้ง (ระหว่างพัฒนา)
-1. เปิด `edge://extensions`
-2. เปิด **Developer mode** (มุมซ้ายล่าง)
-3. กด **Load unpacked** → เลือกโฟลเดอร์ `HistoryCleaner` นี้
-4. (แนะนำ) กดไอคอนจิ๊กซอว์ → ปักหมุด TabSweep ไว้บน toolbar
+I wanted a few sites to never show up in my history, without going InPrivate or clearing everything. So you add a site once, choose when its history should go, and TabSweep handles the rest.
 
-แก้โค้ดแล้วต้องกด **Reload** ที่การ์ด extension ใน `edge://extensions`
+![TabSweep popup](store/screenshot-1-popup-en.png)
 
-## ส่งร้าน Edge Add-ons
-1. `python -I tools/build_zip.py` → `dist/tabsweep-<version>.zip` (ตรวจคำแปล/ไฟล์ให้ก่อน build)
-2. ข้อความกรอกหน้าร้าน, เหตุผล permission, notes for certification → `store/LISTING.md`
-3. โลโก้ 300×300 + ภาพหน้าจอ 1280×800 (en/th) → `store/`
-4. Privacy policy (GitHub Pages) → `docs/privacy.html` → https://fzerog.github.io/tabsweep/privacy.html
-5. ออกเวอร์ชันใหม่: แก้ `version` ใน `manifest.json` → build zip ใหม่ → อัปโหลดใน Partner Center
+## What it does
 
-## ภาษา
-- ข้อความทั้งหมดอยู่ใน `_locales/en/messages.json` และ `_locales/th/messages.json` (default = en)
-- HTML ใช้ `data-i18n="key"` / `data-i18n-attr="placeholder:key"`, JS ใช้ `t("key", ...)` จาก `lib/i18n.js`
-- `tools/build_zip.py` จะ fail ถ้ามี key ที่ใช้แต่ไม่มีคำแปลครบทั้งสองภาษา
+Each site in your list gets one of two modes:
 
-## ใช้งาน
-- **Popup** (กดไอคอน): เพิ่มเว็บที่เปิดอยู่เข้ารายการ, ปุ่ม "ลบเดี๋ยวนี้"
-- **Options** (คลิกขวาไอคอน → Extension options): เพิ่ม/เอาออก/เปลี่ยนโหมด, ตั้งรอบการลบซ้ำ
+- **Delete on visit** removes every page from history right after you open it. It also re-checks when you close the tab, every few minutes (5 by default), and when the browser starts, in case something slipped through.
+- **Delete on tab close** leaves history alone while you're using the site, then wipes it when you close the last tab of that site. If you close the whole browser at once, it cleans up on the next start.
 
-### โหมด
-| โหมด | ทำงานยังไง |
+Adding `youtube.com` also covers `m.youtube.com`, `music.youtube.com` and so on, but not look-alikes like `notyoutube.com`. Shared zones like `co.th` or `co.uk` are rejected on purpose, since they'd wipe history for thousands of unrelated sites.
+
+Other bits:
+
+- A **Delete now** button that shows exactly which sites it's about to clean, then tells you how many entries were removed per site.
+- An optional count on the toolbar icon (items deleted since the browser started).
+- An optional popup that drops down from the icon after a cleanup and closes itself after 4 seconds.
+- English and Thai UI. It follows your browser language by default, and you can switch it in Settings.
+- Light and dark themes.
+
+## Privacy
+
+Everything runs on your machine. There are no servers, no analytics and no network requests. Your site list stays in local extension storage and isn't synced anywhere. TabSweep only touches browsing history, so cookies, cache and saved passwords are left alone.
+
+Full policy: https://fzerog.github.io/tabsweep/privacy.html
+
+## Install
+
+It's being submitted to the Microsoft Edge Add-ons store. Until it's listed there, you can load it from source:
+
+1. Clone or download this repo.
+2. Open `edge://extensions` and turn on **Developer mode** (bottom left).
+3. Click **Load unpacked** and pick the repo folder.
+4. Optional: pin it from the puzzle-piece menu so the icon stays on the toolbar.
+
+It should also work in Chrome 127+, since it only uses standard extension APIs, but I've only tested it in Edge.
+
+## Known limitations
+
+- If you close the entire browser in one go, the "on tab close" cleanup may not finish before Edge shuts down. It catches up on the next launch.
+- Navigating away from a site inside the same tab doesn't count as closing it. The cleanup happens when that tab is closed.
+- I haven't confirmed whether deletions propagate through Edge Sync to your other devices.
+- The auto popup only opens while the Edge window is focused, and it briefly takes keyboard focus while it's open.
+- History kept by online accounts (Google My Activity, your Microsoft account) is separate and has to be managed there.
+
+## Development
+
+There's no build step for the extension itself. Edit the files, then hit **Reload** on the TabSweep card in `edge://extensions`. Logs from the background worker are prefixed with `[TabSweep]` (Inspect views → service worker).
+
+Project layout:
+
+```
+background.js      service worker: visit/tab tracking, sweeps, badge, popup trigger
+popup.*, options.* the two UI pages
+lib/sites.js       domain matching and history sweeping
+lib/i18n.js        translations (loads _locales/<lang>/messages.json)
+lib/ui.js          small DOM helpers shared by both pages
+_locales/          en and th strings
+fonts/             bundled fonts (SIL OFL 1.1, licenses included)
+icons/             toolbar icons
+docs/              GitHub Pages site (privacy policy)
+store/             store listing text, logo and screenshots
+tools/             helper scripts (not shipped)
+```
+
+Helper scripts (Python 3, standard library only):
+
+- `python -I tools/build_zip.py` packages the extension into `dist/tabsweep-<version>.zip`. It refuses to build if a string is missing from either language or a referenced file doesn't exist.
+- `python -I tools/make_icons.py icons` regenerates the toolbar icons, and `... store` the 300×300 store logo.
+- `python -I tools/fetch_fonts.py fonts` re-downloads the fonts from Google Fonts.
+
+When adding UI text, put the string in both `_locales/en/messages.json` and `_locales/th/messages.json`. HTML uses `data-i18n="key"` (or `data-i18n-attr="placeholder:key"`) and JS uses `t("key", ...)`.
+
+## Permissions
+
+| Permission | Why |
 |---|---|
-| ลบทันทีตอนเข้า | ลบทุกครั้งที่เข้าเว็บ + กวาดซ้ำตอนปิดแท็บ + ลบซ้ำทุก N นาที + ลบตอนเปิด browser (= เปิดทั้งสองโหมดพร้อมกัน) |
-| ลบตอนปิดแท็บ | เก็บประวัติระหว่างใช้ ลบเมื่อปิดแท็บของเว็บนั้น (เปิดหลายแท็บ → ลบตอนปิดแท็บสุดท้าย) + เก็บตกตอนเปิด browser |
+| `history` | Find and delete history entries for the sites in your list |
+| `tabs` | Know when the last tab of a listed site closes, and show the current site in the popup |
+| `storage` | Save your site list and settings locally |
+| `alarms` | Run the periodic re-check |
 
-ใส่ domain หลักจะครอบคลุม subdomain ด้วย (`youtube.com` → `m.youtube.com`) แต่ไม่โดนเว็บอื่นที่ชื่อคล้าย (`notyoutube.com`)
+## Credits
 
-### การแจ้งเตือน (ตั้งใน Options → 03 การทำงาน)
-- **ตัวเลขบนไอคอน** (เปิดเป็นค่าเริ่มต้น) — จำนวนรายการที่ลบไปตั้งแต่เปิด browser
-- **เปิด popup แจ้งตอนลบ** (ปิดเป็นค่าเริ่มต้น) — popup ของ extension เลื่อนลงมาจากไอคอน
-  บอกว่าลบเว็บไหนกี่รายการ แล้วปิดเองใน 4 วินาที (เอาเมาส์ชี้/กด = ไม่ปิด)
-  - ปิดแท็บ (โหมดลบตอนปิดแท็บ): เด้งทุกครั้งที่ลบได้
-  - โหมดลบทันที: รวมเป็นก้อน และเด้งไม่เกินเว็บละ 1 ครั้งต่อ 5 นาที
-  - ใช้ `chrome.action.openPopup()` (Chrome 127+) — เปิดได้เฉพาะตอนหน้าต่าง Edge active อยู่
-    ถ้าย่อหน้าต่าง/สลับไปโปรแกรมอื่นจะไม่เด้ง (ตัวเลขบนไอคอนยังนับปกติ)
-  - popup จะดึง focus ไปชั่วคราว ถ้ากำลังพิมพ์อยู่ตัวอักษรอาจเข้า popup แทน
+Fonts: [Bai Jamjuree](https://fonts.google.com/specimen/Bai+Jamjuree), [Anuphan](https://fonts.google.com/specimen/Anuphan) and [IBM Plex Mono](https://fonts.google.com/specimen/IBM+Plex+Mono), all under the SIL Open Font License.
 
-## ข้อจำกัด
-- **ปิดแท็บพร้อมปิด browser** — ถ้าปิดทั้ง Edge ทีเดียว service worker อาจลบไม่ทัน
-  จึงมีการเก็บตกตอนเปิด browser (`runtime.onStartup`)
-- **ย้ายไปเว็บอื่นในแท็บเดิม** (ไม่ได้ปิดแท็บ) ยังไม่ลบ — จะลบตอนปิดแท็บนั้น
-- **Edge Sync** — ยังไม่ได้ยืนยันว่าการลบจะ sync ไปลบในเครื่องอื่นด้วย
-- InPrivate ไม่บันทึก history อยู่แล้ว
-- ลบเฉพาะ **History** — ไม่ลบ cookies, cache, รายการใน "Recently closed"
-
-## Debug
-`edge://extensions` → การ์ด TabSweep → **Inspect views: service worker** → ดู Console (log ขึ้นต้นด้วย `[TabSweep]`)
-
-## ไฟล์
-- `manifest.json` — permissions: history, storage, alarms, tabs (อ่าน URL ของแท็บตอน track)
-- `icons/` — ไอคอน 16/32/48/128 (สร้างใหม่ได้ด้วย `python -I tools/make_icons.py icons`)
-- `background.js` — service worker (history.onVisited, tabs.onUpdated/onRemoved, onStartup, alarms)
-- `lib/sites.js` — logic ร่วม (normalize domain, match, sweep)
-- `lib/ui.js` — UI helpers (segmented control, ปุ่มลบ)
-- `lib/i18n.js` — คำแปล (`t`, `tNodes`, `localize`)
-- `_locales/` — ข้อความ en / th (เลือกภาษาได้ใน Options; ชื่อ/คำอธิบายใน manifest ตามภาษา browser)
-- `fonts/` — Bai Jamjuree, Anuphan, IBM Plex Mono (SIL OFL 1.1, แนบ `OFL-*.txt`) — subset thai+latin,
-  ดาวน์โหลดใหม่ได้ด้วย `python -I tools/fetch_fonts.py fonts`
-- `popup.*`, `options.*`, `styles.css` — UI (ฟอนต์ของ Windows ไม่โหลดจากเน็ต, รองรับ dark mode)
-- `tools/` — `make_icons.py` (ไอคอน/โลโก้), `build_zip.py` (package) — ไม่ถูกใส่ใน zip
-- `store/` — โลโก้, ภาพหน้าจอ, `LISTING.md` — ไม่ถูกใส่ใน zip
-- `docs/` — หน้าเว็บ GitHub Pages (`index.html`, `privacy.html`) — ไม่ถูกใส่ใน zip
-
-## Performance
-- ลบซ้ำเป็นระยะ (default 5 นาที) ค้นเฉพาะช่วงล่าสุด ไม่สแกนประวัติทั้งหมด
-- สแกนเต็มแค่ตอนเปิด browser / ติดตั้ง / กด "ลบเดี๋ยวนี้" / เพิ่มเว็บใหม่
-- settings cache ใน memory, ลบเป็น batch ละ 50
-
-## ความปลอดภัย
-- ไม่มี content script, ไม่มี `externally_connectable`, ไม่มี `web_accessible_resources` → เว็บทั่วไปเข้าถึง/สั่ง extension ไม่ได้
-- รับคำสั่งเฉพาะจากหน้าของ extension เอง (เช็ค `sender.id`)
-- ไม่มีการเรียก network ใดๆ, ไม่มี `innerHTML`/`eval`, ไม่มี library ภายนอก, ใช้ CSP default ของ MV3
-- กันลบเกิน: โดเมนกลางแบบ `co.th`, `go.th`, `com.au`, `co.uk` เพิ่มเข้ารายการไม่ได้
-  และต่อให้หลุดเข้ามา `isBlocked()` ก็ไม่ match อะไร (กัน 2 ชั้น)
-- ข้อจำกัดที่รู้: รายการเว็บเก็บใน `storage.local` แบบไม่เข้ารหัส (ไม่ sync) — คนที่เข้าถึงไฟล์โปรไฟล์ Windows ได้จะเห็นรายการ;
-  popup แจ้งตอนลบแสดงชื่อเว็บบนจอ (ปิดเป็นค่าเริ่มต้น)
-
-## อ้างอิง
-- https://developer.chrome.com/docs/extensions/reference/api/history
-- https://developer.chrome.com/docs/extensions/reference/api/runtime#event-onStartup
-- https://developer.chrome.com/docs/extensions/reference/api/alarms
-- https://developer.chrome.com/docs/extensions/reference/api/tabs
-- https://developer.chrome.com/docs/extensions/reference/api/storage#property-session
-- https://developer.chrome.com/docs/extensions/reference/api/action#badge
-- https://developer.chrome.com/docs/extensions/reference/api/action#method-openPopup
-- https://github.com/w3c/webextensions/issues/160 (openPopup: ไม่ต้องมี user gesture, ต้องเป็นหน้าต่าง active)
-- https://learn.microsoft.com/en-us/microsoft-edge/extensions/developer-guide/api-support
-- https://learn.microsoft.com/en-us/microsoft-edge/extensions/publish/publish-extension
-- https://learn.microsoft.com/en-us/microsoft-edge/extensions/publish/create-dev-account (ไม่มีค่าสมัคร)
-- https://developer.chrome.com/docs/extensions/mv3/i18n-messages
+Found a bug or have an idea? [Open an issue](https://github.com/FZeroG/tabsweep/issues).
