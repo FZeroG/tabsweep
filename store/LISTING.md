@@ -96,7 +96,7 @@ site history
 
 ## 6. Store listing — Thai (th)
 
-- Name (จาก manifest): `TabSweep: ลบประวัติเฉพาะเว็บที่เลือก`
+- Name (จาก manifest): `TabSweep: Site History Cleaner` (ชื่อเดียวกันทุกภาษา)
 - Short description (จาก manifest): `ลบประวัติการเข้าเว็บเฉพาะเว็บที่เลือกให้อัตโนมัติ ทันทีตอนเข้า หรือตอนปิดแท็บ ทำงานในเครื่อง ไม่ส่งข้อมูลออก`
 
 **Description:**
