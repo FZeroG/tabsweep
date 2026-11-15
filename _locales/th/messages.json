@@ -1,7 +1,7 @@
 {
   "extName": { "message": "TabSweep: Site History Cleaner" },
   "extShortName": { "message": "TabSweep" },
-  "extDescription": { "message": "ลบประวัติการเข้าเว็บเฉพาะเว็บที่เลือกให้อัตโนมัติ ทันทีตอนเข้า หรือตอนปิดแท็บ ทำงานในเครื่อง ไม่ส่งข้อมูลออก" },
+  "extDescription": { "message": "Auto-delete browsing history for the sites you choose: instantly on visit, or when you close the tab. Works offline." },
 
   "modeVisit": { "message": "ลบทันทีตอนเข้า" },
   "modeClose": { "message": "ลบตอนปิดแท็บ" },
