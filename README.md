@@ -31,7 +31,9 @@ Full policy: https://fzerog.github.io/tabsweep/privacy.html
 
 ## Install
 
-It's being submitted to the Microsoft Edge Add-ons store. Until it's listed there, you can load it from source:
+Get it from the [Microsoft Edge Add-ons store](https://microsoftedge.microsoft.com/addons/detail/apiadgefflpmneegaogmjepgfccepagd).
+
+Or load it from source:
 
 1. Clone or download this repo.
 2. Open `edge://extensions` and turn on **Developer mode** (bottom left).
