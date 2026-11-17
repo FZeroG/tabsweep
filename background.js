@@ -7,15 +7,22 @@ import {
   closeTab,
   newlyVisit,
   badgeText,
+  saveSettings,
+  nextScheduleTime,
+  rememberHost,
+  clearSiteData,
+  idleDataSites,
 } from "./lib/sites.js";
 
 const ALARM = "hc-sweep";
+const SCHEDULE_ALARM = "hc-schedule";
+const BOOT_DATA_DELAY_MS = 10_000; // รอแท็บที่ browser restore กลับมาก่อน ค่อยเช็กว่าเว็บไหนไม่ได้เปิดอยู่
 const BADGE_COLOR = "#e8461b";
 const NOTIFY_DEBOUNCE_MS = 2000;            // รวมการลบที่ติดกันเป็น popup เดียว
 const NOTIFY_THROTTLE_MS = 5 * 60_000;      // โหมด visit: เว็บเดียวกันเด้งได้ทุก 5 นาที
 
 function safe(promise) {
-  promise.catch((err) => console.error("[HistoryClean]", err));
+  promise.catch((err) => console.error("[AutoClean]", err));
 }
 
 // ---- Settings cache: onVisited / onUpdated ยิงบ่อยมาก ไม่ต้องอ่าน storage ทุกครั้ง ----
@@ -25,6 +32,41 @@ const settings = () => (settingsPromise ??= getSettings());
 async function scheduleAlarm() {
   const { sweepMinutes } = await settings();
   await chrome.alarms.create(ALARM, { periodInMinutes: sweepMinutes });
+}
+
+// ======================= ลบตามเวลา =======================
+// alarm ตั้งด้วย when = รอบล่าสุด + ระยะ (ไม่ใช่นับใหม่ทุกครั้งที่เปิด browser)
+async function scheduleCleanup() {
+  const { schedule, lastScheduledAt } = await getSettings();
+  await chrome.alarms.clear(SCHEDULE_ALARM);
+  if (!schedule) return;
+  let last = lastScheduledAt;
+  if (!last || last > Date.now()) {
+    last = Date.now();
+    await saveSettings({ lastScheduledAt: last });
+  }
+  const when = nextScheduleTime(last, schedule);
+  await chrome.alarms.create(SCHEDULE_ALARM, { when, periodInMinutes: schedule });
+}
+
+async function runScheduled() {
+  await saveSettings({ lastScheduledAt: Date.now() });
+  const { total, byDomain } = await sweep();
+  addDeleted(total);
+  await clearIdleSiteData();
+  if (total) await announce("schedule", byDomain);
+}
+
+// ======================= ลบ cookies / ข้อมูลเว็บ =======================
+// host ย่อยที่เคยเปิด เก็บใน session (ล้างเองตอนปิด browser)
+let hostsPromise = null;
+const getDataHosts = () =>
+  (hostsPromise ??= chrome.storage.session.get("dataHosts").then((r) => r.dataHosts ?? {}));
+
+async function clearIdleSiteData() {
+  const [{ sites }, tabs, hosts] = await Promise.all([settings(), chrome.tabs.query({}), getDataHosts()]);
+  const openUrls = tabs.flatMap((t) => [t.url, t.pendingUrl]).filter(Boolean);
+  return clearSiteData(idleDataSites(sites, openUrls), hosts);
 }
 
 // ======================= Badge (ตัวเลขบนไอคอน) =======================
@@ -45,7 +87,7 @@ function addDeleted(n) {
       await chrome.storage.session.set({ deletedCount: next });
       await renderBadge(next);
     } catch (err) {
-      console.error("[HistoryClean] badge", err); // ไม่ให้ chain พัง
+      console.error("[AutoClean] badge", err); // ไม่ให้ chain พัง
     }
     return next;
   });
@@ -70,7 +112,7 @@ async function announce(reason, items) {
   try {
     await openPopup();
   } catch (err) {
-    console.debug("[HistoryClean] เปิด popup ไม่ได้:", String(err));
+    console.debug("[AutoClean] เปิด popup ไม่ได้:", String(err));
   }
 }
 
@@ -147,6 +189,11 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo) => {
       const { sites } = await settings();
       if (sites.length === 0) return;
       if (trackUrl(await getTabMap(), tabId, changeInfo.url, sites)) await saveTabMap();
+      const site = findSite(changeInfo.url, sites);
+      if (site?.data === true) {
+        const hosts = await getDataHosts();
+        if (rememberHost(hosts, site.domain, changeInfo.url)) await chrome.storage.session.set({ dataHosts: hosts });
+      }
     })()
   );
 });
@@ -169,6 +216,11 @@ chrome.tabs.onRemoved.addListener((tabId) => {
         if (count && job.mode === "close") closed.push({ domain: job.domain, count });
         else if (count) queueNotify(job.domain, count);
       }
+      // แท็บสุดท้ายของเว็บที่เปิด "ลบ cookies" ปิดแล้ว → ลบ cookies/cache/ข้อมูลเว็บ (ไม่ลบตอนเข้าเว็บ ไม่งั้นจะ logout ระหว่างใช้)
+      const dataDomains = jobs
+        .filter((job) => sites.some((s) => s.domain === job.domain && s.data === true))
+        .map((job) => job.domain);
+      if (dataDomains.length) await clearSiteData(dataDomains, await getDataHosts());
       if (closed.length) await announce("close", closed);
     })()
   );
@@ -178,6 +230,7 @@ chrome.tabs.onRemoved.addListener((tabId) => {
 //    เก็บตกแท็บที่ปิดไปตอนปิด browser ซึ่ง service worker อาจลบไม่ทัน
 function onBoot() {
   safe(scheduleAlarm());
+  safe(scheduleCleanup());
   safe(countChain.then(renderBadge));
   safe(
     (async () => {
@@ -187,12 +240,20 @@ function onBoot() {
       await seedOpenTabs();
     })()
   );
+  // cookies ที่ค้างจากการปิด browser ทีเดียวทั้งหมด — รอให้แท็บที่ restore กลับมาก่อน แล้วข้ามเว็บที่เปิดอยู่
+  setTimeout(() => safe(clearIdleSiteData()), BOOT_DATA_DELAY_MS);
 }
 chrome.runtime.onInstalled.addListener(onBoot);
 chrome.runtime.onStartup.addListener(onBoot);
 
+// ติดตั้งครั้งแรก → เปิดหน้าต้อนรับ
+chrome.runtime.onInstalled.addListener(({ reason }) => {
+  if (reason === "install") safe(chrome.tabs.create({ url: chrome.runtime.getURL("options.html?welcome=1") }));
+});
+
 // 5) ลบซ้ำเป็นระยะ (เว็บโหมด "visit") — ค้นเฉพาะช่วงล่าสุด ไม่สแกนประวัติทั้งหมด
 chrome.alarms.onAlarm.addListener((alarm) => {
+  if (alarm.name === SCHEDULE_ALARM) return safe(runScheduled());
   if (alarm.name !== ALARM) return;
   safe(
     (async () => {
@@ -210,6 +271,7 @@ chrome.storage.onChanged.addListener((changes, area) => {
   if (area !== "local") return;
   settingsPromise = null;
   if (changes.sweepMinutes) safe(scheduleAlarm());
+  if (changes.schedule) safe(scheduleCleanup());
   if (changes.showBadge) safe(countChain.then(renderBadge));
   if (changes.sites) {
     for (const d of newlyVisit(changes.sites.oldValue, changes.sites.newValue)) {
@@ -223,11 +285,18 @@ chrome.storage.onChanged.addListener((changes, area) => {
 chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
   if (sender.id !== chrome.runtime.id) return;
   if (msg?.type === "sweepNow") {
-    sweep(msg.mode).then(
-      (res) => {
-        addDeleted(res.total);
-        sendResponse({ ok: true, ...res });
-      },
+    (async () => {
+      const res = await sweep(msg.mode);
+      addDeleted(res.total);
+      // ผู้ใช้กดเอง → ลบ cookies ของเว็บที่เปิด "ลบ cookies" ด้วย แม้แท็บยังเปิดอยู่
+      const { sites } = await settings();
+      const dataCleared = await clearSiteData(
+        sites.filter((s) => s.data === true && (!msg.mode || s.mode === msg.mode)).map((s) => s.domain),
+        await getDataHosts()
+      );
+      return { ...res, dataCleared };
+    })().then(
+      (res) => sendResponse({ ok: true, ...res }),
       (err) => sendResponse({ ok: false, error: String(err) })
     );
     return true; // ตอบกลับแบบ async

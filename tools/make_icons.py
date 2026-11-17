@@ -1,4 +1,4 @@
-"""ไอคอน History Cleaner — stdlib ล้วน (ไม่ต้องมี Pillow)
+"""ไอคอน AutoClean History — stdlib ล้วน (ไม่ต้องมี Pillow)
 ใช้แบบ 2: นาฬิกา (ประวัติ) + ไม้กวาดสีส้ม (ลบ)
 
   python -I tools/make_icons.py icons          -> เขียน icons/icon{16,32,48,128}.png

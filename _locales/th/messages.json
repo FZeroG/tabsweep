@@ -1,7 +1,7 @@
 {
-  "extName": { "message": "History Clean: Auto-Delete Chosen Sites" },
-  "extShortName": { "message": "HistoryClean" },
-  "extDescription": { "message": "Tired of deleting your history after logging in to sites you'd rather keep private? Auto-clean them on visit or when the tab closes." },
+  "extName": { "message": "AutoClean History: Delete Chosen Sites" },
+  "extShortName": { "message": "AutoClean" },
+  "extDescription": { "message": "Delete history, cookies and cache of only the sites you choose: on visit, when the tab closes or on a schedule. The rest stays." },
 
   "modeVisit": { "message": "ลบทันทีตอนเข้า" },
   "modeClose": { "message": "ลบตอนปิดแท็บ" },
@@ -28,6 +28,31 @@
   "reasonClose": { "message": "ปิดแท็บแล้ว ลบประวัติให้" },
   "reasonBoot": { "message": "ลบประวัติที่ค้างตอนเปิด browser" },
   "reasonTest": { "message": "ทดสอบการแจ้งเตือน" },
+  "reasonSchedule": { "message": "ลบตามเวลาที่ตั้งไว้" },
+
+  "dataShort": { "message": "+ cookies" },
+  "dataTitle": { "message": "ลบ cookies, cache และข้อมูลเว็บของเว็บนี้ด้วยเมื่อปิดแท็บสุดท้าย คุณจะถูก logout จากเว็บนี้ และ cookies จะถูกลบทั้งโดเมนหลัก" },
+  "dataAria": { "message": "ลบ cookies และข้อมูลเว็บของ $1 ด้วย" },
+  "addDataLabel": { "message": "ลบ cookies และข้อมูลเว็บด้วยตอนปิดแท็บ (จะถูก logout จากเว็บนี้)" },
+  "sweepDataNote": { "message": "ลบ cookies และข้อมูลเว็บของ $1 เว็บด้วย" },
+
+  "scheduleTitle": { "message": "ลบตามเวลา" },
+  "scheduleDesc": { "message": "ลบประวัติทั้งหมดของทุกเว็บในรายการตามรอบ แม้แท็บยังเปิดอยู่ และลบ cookies ของเว็บที่ไม่ได้เปิดอยู่" },
+  "scheduleAria": { "message": "รอบการลบตามเวลา" },
+  "scheduleOff": { "message": "ปิด" },
+  "scheduleHour": { "message": "ทุกชั่วโมง" },
+  "scheduleHours": { "message": "ทุก $1 ชั่วโมง" },
+  "scheduleDay": { "message": "ทุกวัน" },
+  "scheduleWeek": { "message": "ทุกสัปดาห์" },
+  "scheduleNext": { "message": "รอบถัดไป: $1" },
+
+  "welcomeTitle": { "message": "ยินดีต้อนรับสู่ AutoClean History" },
+  "welcomeDesc": { "message": "เลือกเว็บที่ไม่อยากให้มีในประวัติ ส่วนเว็บอื่นอยู่ครบเหมือนเดิม" },
+  "welcomeStep1": { "message": "ใส่ชื่อเว็บด้านล่าง เช่น เว็บที่ต้องล็อกอินแต่ไม่อยากให้มีในประวัติ" },
+  "welcomeStep2": { "message": "เลือก ลบทันทีตอนเข้า (ไม่เหลือเลย) หรือ ลบตอนปิดแท็บ (ระหว่างใช้ยังเห็นประวัติ)" },
+  "welcomeStep3": { "message": "เพิ่มเติม: ลบ cookies ด้วย ซ่อนชื่อเว็บ หรือตั้งเวลาลบ และปักหมุดไอคอนจากเมนูรูปจิ๊กซอว์เพื่อดูตัวเลข" },
+  "welcomeAdd": { "message": "เพิ่มเว็บแรก" },
+  "welcomeDone": { "message": "เข้าใจแล้ว" },
 
   "sweeping": { "message": "กำลังลบ..." },
   "noReply": { "message": "ไม่มีการตอบกลับ" },
@@ -36,7 +61,7 @@
   "sweepFailed": { "message": "ลบไม่สำเร็จ: $1" },
   "popupUnsupported": { "message": "browser เวอร์ชันนี้ไม่รองรับการเปิด popup อัตโนมัติ" },
 
-  "optionsTitle": { "message": "History Clean – ตั้งค่า" },
+  "optionsTitle": { "message": "AutoClean History – ตั้งค่า" },
   "langLabel": { "message": "ภาษา" },
   "langAuto": { "message": "อัตโนมัติ (ตามภาษา browser)" },
   "headline": { "message": "เว็บที่ต้องลบประวัติ" },
@@ -85,7 +110,7 @@
   "popupFailed": { "message": "เปิดไม่ได้: $1" },
 
   "sweepNowTitle": { "message": "ลบเดี๋ยวนี้" },
-  "sweepNowDesc": { "message": "ลบประวัติย้อนหลังทั้งหมดของเว็บต่อไปนี้ (ทั้งสองโหมด) — ประวัติของเว็บอื่นไม่โดน" },
+  "sweepNowDesc": { "message": "ลบประวัติย้อนหลังทั้งหมดของเว็บต่อไปนี้ (ทั้งสองโหมด) และ cookies ของเว็บที่เปิด + cookies ไว้ — เว็บอื่นไม่โดน" },
   "sweepAllBtn": { "message": "ลบประวัติทั้งหมดในรายการ" },
 
   "secBackup": { "message": "สำรองข้อมูล" },
@@ -94,10 +119,10 @@
   "importBtn": { "message": "นำเข้าจากไฟล์" },
   "exportDone": { "message": "บันทึก $1 เว็บลงไฟล์ $2 แล้ว" },
   "exportFailed": { "message": "ส่งออกไม่ได้: $1" },
-  "importTooLarge": { "message": "ไฟล์ใหญ่เกินกว่าจะเป็นไฟล์สำรองของ History Clean (สูงสุด $1 KB)" },
+  "importTooLarge": { "message": "ไฟล์ใหญ่เกินกว่าจะเป็นไฟล์สำรองของ AutoClean History (สูงสุด $1 KB)" },
   "importNotJson": { "message": "ไฟล์นี้ไม่ใช่ JSON ที่ถูกต้อง" },
-  "importWrongFormat": { "message": "ไฟล์นี้ไม่ใช่ไฟล์สำรองของ History Clean" },
-  "importNewer": { "message": "ไฟล์นี้สร้างจาก History Clean เวอร์ชันใหม่กว่า กรุณาอัปเดต extension ก่อน" },
+  "importWrongFormat": { "message": "ไฟล์นี้ไม่ใช่ไฟล์สำรองของ AutoClean History" },
+  "importNewer": { "message": "ไฟล์นี้สร้างจาก AutoClean History เวอร์ชันใหม่กว่า กรุณาอัปเดต extension ก่อน" },
   "importTooMany": { "message": "จะมีเว็บเกิน $1 เว็บ ซึ่งเกินขีดจำกัด" },
   "importEmpty": { "message": "ไม่มีเว็บหรือการตั้งค่าที่ใช้ได้ในไฟล์นี้" },
   "importFailed": { "message": "นำเข้าไม่ได้: $1" },
@@ -125,5 +150,5 @@
   "closeLi1": { "message": "ระหว่างใช้ยังเห็นประวัติ ลบเมื่อปิดแท็บของเว็บนั้น" },
   "closeLi2": { "message": "เปิดหลายแท็บ → ลบตอนปิดแท็บสุดท้าย" },
   "closeLi3": { "message": "ปิด browser ทั้งหมดทีเดียว → เก็บตกตอนเปิดครั้งถัดไป" },
-  "footnote": { "message": "ข้อมูลทั้งหมดเก็บในเครื่องนี้ History Clean ไม่ส่งข้อมูลออกไปที่ไหน และลบเฉพาะประวัติการเข้าเว็บ (ไม่ลบ cookies / cache)" }
+  "footnote": { "message": "ข้อมูลทั้งหมดเก็บในเครื่องนี้ AutoClean History ไม่ส่งข้อมูลออกไปที่ไหน และลบเฉพาะข้อมูลของเว็บในรายการเท่านั้น" }
 }

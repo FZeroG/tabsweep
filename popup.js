@@ -1,6 +1,6 @@
 import { getSettings, saveSettings, normalizeDomain, findSite, isTooBroad } from "./lib/sites.js";
 import {
-  el, modeSeg, modeName, monogram, setMsg, runSweep, siteChips,
+  el, modeSeg, modeName, monogram, setMsg, runSweep, siteChips, dataSwitch,
   setHidden, isHidden, shown, spoken, siteMonogram, eyeButton,
 } from "./lib/ui.js";
 import { t, tNodes, localize, initI18n } from "./lib/i18n.js";
@@ -45,6 +45,13 @@ function renderTracked(card, site) {
     modeSeg(site.mode, (mode) =>
       updateSites((list) => list.map((s) => (s.domain === site.domain ? { ...s, mode } : s)))
     ),
+    dataSwitch(site.data === true, (on) =>
+      updateSites((list) => list.map((s) => {
+        if (s.domain !== site.domain) return s;
+        const { data: _drop, ...rest } = s;
+        return on ? { ...rest, data: true } : rest;
+      }))
+    , site.domain),
     el("div", { class: "site-foot" },
       el("span", { class: "muted mono", style: "font-size:11.5px" }, `+ *.${shown(site.domain)}`),
       el("button", {
@@ -139,7 +146,7 @@ chrome.storage.onChanged.addListener((changes, area) => {
 
 // ---------- แบนเนอร์ "ลบแล้ว" (ตอน extension เปิด popup เองหลังลบ) ----------
 
-const REASON = { visit: "reasonVisit", close: "reasonClose", boot: "reasonBoot", test: "reasonTest" };
+const REASON = { visit: "reasonVisit", close: "reasonClose", boot: "reasonBoot", test: "reasonTest", schedule: "reasonSchedule" };
 const AUTO_CLOSE_MS = 4000;
 let closeTimer = 0;
 

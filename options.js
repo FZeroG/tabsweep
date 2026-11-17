@@ -1,6 +1,6 @@
-import { getSettings, saveSettings, normalizeDomain, isTooBroad } from "./lib/sites.js";
+import { getSettings, saveSettings, normalizeDomain, isTooBroad, SCHEDULES, nextScheduleTime } from "./lib/sites.js";
 import {
-  el, modeSeg, setMsg, runSweep, siteChips, toggle,
+  el, modeSeg, setMsg, runSweep, siteChips, toggle, dataSwitch,
   setHidden, isHidden, shown, spoken, siteMonogram, eyeButton,
 } from "./lib/ui.js";
 import { t, tNodes, localize, initI18n } from "./lib/i18n.js";
@@ -74,8 +74,11 @@ $("addForm").addEventListener("submit", async (e) => {
   e.preventDefault();
   const domain = updateHint();
   if (!domain) return $("domain").focus();
-  await updateSites((list) => [...list, { domain, mode: addSeg.getValue() }]);
+  const site = { domain, mode: addSeg.getValue() };
+  if ($("addData").checked) site.data = true;
+  await updateSites((list) => [...list, site]);
   $("domain").value = "";
+  $("addData").checked = false;
   updateHint();
   showToast(t("toastAdded", shown(domain)));
 });
@@ -117,7 +120,14 @@ function itemRow(site) {
     siteMonogram(site.domain, site.mode),
     el("div", { class: "info" },
       el("span", { class: "domain" }, shown(site.domain)),
-      el("span", { class: "sub" }, `+ *.${shown(site.domain)}`)
+      el("span", { class: "sub" }, `+ *.${shown(site.domain)}`),
+      dataSwitch(site.data === true, (on) =>
+        updateSites((list) => list.map((s) => {
+          if (s.domain !== site.domain) return s;
+          const { data: _drop, ...rest } = s;
+          return on ? { ...rest, data: true } : rest;
+        }))
+      , site.domain)
     ),
     modeSeg(site.mode, (mode) =>
       updateSites((list) => list.map((s) => (s.domain === site.domain ? { ...s, mode } : s)))
@@ -184,6 +194,45 @@ $("interval").addEventListener("change", async () => {
 });
 
 $("sweepBtn").addEventListener("click", () => runSweep($("sweepBtn"), $("sweepMsg")));
+
+// ลบตามเวลา: เปลี่ยนรอบ = เริ่มนับใหม่จากตอนนี้
+function scheduleLabel(m) {
+  if (m === 0) return t("scheduleOff");
+  if (m === 60) return t("scheduleHour");
+  if (m === 1440) return t("scheduleDay");
+  if (m === 10080) return t("scheduleWeek");
+  return t("scheduleHours", m / 60);
+}
+
+function renderSchedule({ schedule, lastScheduledAt }) {
+  const sel = $("schedule");
+  if (document.activeElement !== sel) {
+    sel.replaceChildren(...SCHEDULES.map((m) => new Option(scheduleLabel(m), String(m), false, m === schedule)));
+  }
+  const next = nextScheduleTime(lastScheduledAt, schedule);
+  $("scheduleNext").textContent = next
+    ? t("scheduleNext", new Date(next).toLocaleString(document.documentElement.lang, { dateStyle: "medium", timeStyle: "short" }))
+    : "";
+}
+
+$("schedule").addEventListener("change", async () => {
+  await saveSettings({ schedule: Number($("schedule").value), lastScheduledAt: Date.now() });
+  setMsg($("scheduleMsg"), t("saved"), "ok");
+});
+
+// หน้าต้อนรับ (เปิดเองตอนติดตั้งครั้งแรก: options.html?welcome=1)
+if (new URLSearchParams(location.search).has("welcome")) {
+  $("welcome").hidden = false;
+  $("welcomeAdd").addEventListener("click", () => {
+    $("domain").focus();
+    $("domain").scrollIntoView({ block: "center", behavior: "smooth" });
+  });
+  $("welcomeDone").addEventListener("click", () => {
+    $("welcome").hidden = true;
+    history.replaceState(null, "", location.pathname);
+    $("domain").focus();
+  });
+}
 
 const badgeToggle = toggle("showBadge", true, (v) => saveSettings({ showBadge: v }));
 const notifyToggle = toggle("notify", false, (v) => saveSettings({ notify: v }));
@@ -262,7 +311,7 @@ $("importFile").addEventListener("change", async () => {
 });
 
 const importMode = () => ($("importReplace").checked ? "replace" : "merge");
-const siteKey = (list) => list.map((s) => `${s.domain}:${s.mode}`).sort().join("|");
+const siteKey = (list) => list.map((s) => `${s.domain}:${s.mode}:${s.data === true}`).sort().join("|");
 
 function renderPreview() {
   if (!pending) return;
@@ -320,7 +369,8 @@ $("importConfirm").addEventListener("click", async () => {
     const prev = await getSettings();
     const undo = { sites: prev.sites };
     for (const key of Object.keys(imported)) undo[key] = prev[key];
-    await saveSettings({ ...imported, sites: plan.result });
+    const extra = "schedule" in imported ? { lastScheduledAt: Date.now() } : {}; // เริ่มนับรอบใหม่
+    await saveSettings({ ...imported, ...extra, sites: plan.result });
     closePreview();
     const langNote = imported.lang && imported.lang !== prev.lang ? " " + t("importLangNote") : "";
     showToast(t("importDone", plan.result.length) + langNote, () => saveSettings(undo));
@@ -359,6 +409,7 @@ async function render() {
   $("sweepBtn").disabled = sites.length === 0;
   renderNames();
   renderInterval(sweepMinutes);
+  renderSchedule(settings);
   updateHint();
 }
 

@@ -1,12 +1,12 @@
-# History Clean
+# AutoClean History
 
-A small Edge extension that keeps the sites you pick out of your browsing history.
+A small Edge extension that automatically keeps the sites you pick out of your browsing history, and only those sites.
 
-It started with a small annoyance: every time I logged in to a site I didn't want in my history, I had to go back and delete the entries one by one afterwards. I didn't want to use InPrivate or wipe everything either. So now you add a site once, choose when its history should go, and History Clean handles the rest.
+It started with a small annoyance: every time I logged in to a site I didn't want in my history, I had to go back and delete the entries one by one afterwards. I didn't want to use InPrivate or wipe the whole browser either. So now you add a site once, choose when its history should go, and AutoClean History handles the rest. Your other history, logins and restorable tabs stay as they are.
 
 (It was called TabSweep up to version 1.2.0.)
 
-![History Clean popup](store/screenshot-1-popup-en.png)
+![AutoClean History popup](store/screenshot-1-popup-en.png)
 
 ## What it does
 
@@ -14,6 +14,11 @@ Each site in your list gets one of two modes:
 
 - **Delete on visit** removes every page from history right after you open it. It also re-checks when you close the tab, every few minutes (5 by default), and when the browser starts, in case something slipped through.
 - **Delete on tab close** leaves history alone while you're using the site, then wipes it when you close the last tab of that site. If you close the whole browser at once, it cleans up on the next start.
+
+On top of that:
+
+- **+ cookies** (per site, off by default) also deletes that site's cookies, cache and site storage when its last tab closes, so you're signed out too. It never does this while the site is open (except when you press Delete now), and it's skipped at browser start for tabs that were restored. Browsers remove cookies for the whole main domain, so turning it on for `news.example.com` signs you out of all of `example.com`. Storage of subdomains you didn't open in that browser session may be left behind.
+- **Scheduled clean** (off by default) fully cleans every site in the list every hour, 6 or 12 hours, day or week, even if the tab is open. The timer doesn't restart when you restart the browser; a missed run happens at the next start.
 
 Adding `youtube.com` also covers `m.youtube.com`, `music.youtube.com` and so on, but not look-alikes like `notyoutube.com`. Shared zones like `co.th` or `co.uk` are rejected on purpose, since they'd wipe history for thousands of unrelated sites.
 
@@ -24,12 +29,13 @@ Other bits:
 - An optional popup that drops down from the icon after a cleanup and closes itself after 4 seconds.
 - **Hide site names**: the list, the popup and the cleanup popup show `••••••` instead of the names, for when someone's looking at your screen. Click the eye icon to peek; it hides again when you close the page. This only masks the screen, the list itself is still stored as plain text in extension storage.
 - **Backup**: export your list and settings to a `.json` file and import it on another computer. Before anything is saved you get a preview: add to your list or replace it, how many sites are new, which entries were skipped, and a warning for sites whose past history will be deleted right away. There's an Undo afterwards. The file is plain text, so keep it somewhere private.
+- A short welcome guide when you first install it.
 - English and Thai UI. It follows your browser language by default, and you can switch it in Settings.
 - Light and dark themes.
 
 ## Privacy
 
-Everything runs on your machine. There are no servers, no analytics and no network requests. Your site list stays in local extension storage and isn't synced anywhere. History Clean only touches browsing history, so cookies, cache and saved passwords are left alone.
+Everything runs on your machine. There are no servers, no analytics and no network requests. Your site list stays in local extension storage and isn't synced anywhere. AutoClean History only deletes data of the sites in your list: their history, plus their cookies and cache if you turned on "+ cookies" for them. It never reads cookies, and saved passwords are left alone.
 
 Full policy: https://fzerog.github.io/tabsweep/privacy.html
 
@@ -58,7 +64,7 @@ It should also work in Chrome 127+, since it only uses standard extension APIs, 
 
 ## Development
 
-There's no build step for the extension itself. Edit the files, then hit **Reload** on the History Clean card in `edge://extensions`. Logs from the background worker are prefixed with `[HistoryClean]` (Inspect views → service worker).
+There's no build step for the extension itself. Edit the files, then hit **Reload** on the AutoClean History card in `edge://extensions`. Logs from the background worker are prefixed with `[AutoClean]` (Inspect views → service worker).
 
 Project layout:
 
@@ -92,7 +98,8 @@ When adding UI text, put the string in both `_locales/en/messages.json` and `_lo
 | `history` | Find and delete history entries for the sites in your list |
 | `tabs` | Know when the last tab of a listed site closes, and show the current site in the popup |
 | `storage` | Save your site list and settings locally |
-| `alarms` | Run the periodic re-check |
+| `alarms` | Run the periodic re-check and the optional scheduled clean |
+| `browsingData` | Delete cookies, cache and site data of sites where you turned on "+ cookies" (no install warning; it never reads that data) |
 
 ## Credits
 

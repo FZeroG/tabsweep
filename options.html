@@ -3,14 +3,14 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title data-i18n="optionsTitle">History Clean</title>
+  <title data-i18n="optionsTitle">AutoClean History</title>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body class="options">
   <div class="wrap">
     <header class="masthead rise">
       <div>
-        <p class="wordmark"><span>History</span><span class="redact">Clean</span></p>
+        <p class="wordmark"><span>AutoClean</span><span class="redact">History</span></p>
         <h1 data-i18n="headline"></h1>
       </div>
       <div class="masthead-side">
@@ -26,6 +26,20 @@
       </div>
     </header>
 
+    <section id="welcome" class="panel welcome rise" data-i18n-attr="aria-label:welcomeTitle" hidden>
+      <h2 data-i18n="welcomeTitle"></h2>
+      <p data-i18n="welcomeDesc"></p>
+      <ol>
+        <li data-i18n="welcomeStep1"></li>
+        <li data-i18n="welcomeStep2"></li>
+        <li data-i18n="welcomeStep3"></li>
+      </ol>
+      <div class="row">
+        <button id="welcomeAdd" class="btn btn-ink" type="button" data-i18n="welcomeAdd"></button>
+        <button id="welcomeDone" class="btn btn-ghost" type="button" data-i18n="welcomeDone"></button>
+      </div>
+    </section>
+
     <section class="section rise">
       <h2 class="section-title"><span class="num">01</span> <span data-i18n="secAdd"></span></h2>
       <form id="addForm" class="panel add-form" novalidate>
@@ -34,6 +48,10 @@
           <div id="addSeg"></div>
           <button type="submit" class="btn btn-ink" data-i18n="add"></button>
         </div>
+        <label class="check-row" data-i18n-attr="title:dataTitle">
+          <input id="addData" type="checkbox">
+          <span data-i18n="addDataLabel"></span>
+        </label>
         <div id="hint" class="hint" aria-live="polite"></div>
       </form>
     </section>
@@ -71,6 +89,15 @@
           <div id="intervalMsg" class="msg"></div>
         </div>
         <div class="panel setting">
+          <h3 data-i18n="scheduleTitle"></h3>
+          <p data-i18n="scheduleDesc"></p>
+          <div class="row">
+            <select id="schedule" class="select" data-i18n-attr="aria-label:scheduleAria"></select>
+            <span id="scheduleNext" class="muted"></span>
+          </div>
+          <div id="scheduleMsg" class="msg"></div>
+        </div>
+        <div class="panel setting wide">
           <h3 data-i18n="notifyTitle"></h3>
           <label class="toggle-row" for="showBadge">
             <span>

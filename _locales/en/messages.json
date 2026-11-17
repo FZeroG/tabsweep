@@ -1,7 +1,7 @@
 {
-  "extName": { "message": "History Clean: Auto-Delete Chosen Sites" },
-  "extShortName": { "message": "HistoryClean" },
-  "extDescription": { "message": "Tired of deleting your history after logging in to sites you'd rather keep private? Auto-clean them on visit or when the tab closes." },
+  "extName": { "message": "AutoClean History: Delete Chosen Sites" },
+  "extShortName": { "message": "AutoClean" },
+  "extDescription": { "message": "Delete history, cookies and cache of only the sites you choose: on visit, when the tab closes or on a schedule. The rest stays." },
 
   "modeVisit": { "message": "Delete on visit" },
   "modeClose": { "message": "Delete on tab close" },
@@ -28,6 +28,31 @@
   "reasonClose": { "message": "Tab closed — history deleted" },
   "reasonBoot": { "message": "Cleaned up leftovers at browser start" },
   "reasonTest": { "message": "Notification test" },
+  "reasonSchedule": { "message": "Scheduled clean" },
+
+  "dataShort": { "message": "+ cookies" },
+  "dataTitle": { "message": "Also delete this site's cookies, cache and site data when its last tab closes. You'll be signed out of it. Cookies are removed for the whole main domain." },
+  "dataAria": { "message": "Also delete cookies and site data of $1" },
+  "addDataLabel": { "message": "Also delete cookies and site data when the tab closes (signs you out of the site)" },
+  "sweepDataNote": { "message": "Also cleared cookies and site data of $1 sites." },
+
+  "scheduleTitle": { "message": "Scheduled clean" },
+  "scheduleDesc": { "message": "Deletes the full history of every site in your list on a schedule, even if its tab is open, plus the cookies of sites that aren't open." },
+  "scheduleAria": { "message": "Scheduled clean interval" },
+  "scheduleOff": { "message": "Off" },
+  "scheduleHour": { "message": "Every hour" },
+  "scheduleHours": { "message": "Every $1 hours" },
+  "scheduleDay": { "message": "Every day" },
+  "scheduleWeek": { "message": "Every week" },
+  "scheduleNext": { "message": "Next: $1" },
+
+  "welcomeTitle": { "message": "Welcome to AutoClean History" },
+  "welcomeDesc": { "message": "Pick the sites you don't want in your history. Everything else stays as it is." },
+  "welcomeStep1": { "message": "Add a site below, for example one you log in to but don't want in your history." },
+  "welcomeStep2": { "message": "Choose Delete on visit (nothing is ever kept) or Delete on tab close (kept while you use the site)." },
+  "welcomeStep3": { "message": "Optional: also delete its cookies, hide site names, or set a scheduled clean. Pin the icon from the puzzle-piece menu to see the count." },
+  "welcomeAdd": { "message": "Add my first site" },
+  "welcomeDone": { "message": "Got it" },
 
   "sweeping": { "message": "Deleting…" },
   "noReply": { "message": "No response" },
@@ -36,7 +61,7 @@
   "sweepFailed": { "message": "Couldn't delete: $1" },
   "popupUnsupported": { "message": "This browser version can't open the popup automatically" },
 
-  "optionsTitle": { "message": "History Clean – Settings" },
+  "optionsTitle": { "message": "AutoClean History – Settings" },
   "langLabel": { "message": "Language" },
   "langAuto": { "message": "Auto (browser language)" },
   "headline": { "message": "Sites to keep out of history" },
@@ -85,7 +110,7 @@
   "popupFailed": { "message": "Couldn't open: $1" },
 
   "sweepNowTitle": { "message": "Delete now" },
-  "sweepNowDesc": { "message": "Deletes all past history of these sites (both modes). Other sites are not touched." },
+  "sweepNowDesc": { "message": "Deletes all past history of these sites (both modes), plus the cookies of sites with + cookies on. Other sites are not touched." },
   "sweepAllBtn": { "message": "Delete all history in the list" },
 
   "secBackup": { "message": "Backup" },
@@ -94,10 +119,10 @@
   "importBtn": { "message": "Import from file" },
   "exportDone": { "message": "Saved $1 sites to $2" },
   "exportFailed": { "message": "Couldn't export: $1" },
-  "importTooLarge": { "message": "This file is too large to be a History Clean backup (max $1 KB)" },
+  "importTooLarge": { "message": "This file is too large to be an AutoClean History backup (max $1 KB)" },
   "importNotJson": { "message": "This file isn't valid JSON" },
-  "importWrongFormat": { "message": "This isn't a History Clean backup file" },
-  "importNewer": { "message": "This backup was made by a newer version of History Clean. Update the extension first." },
+  "importWrongFormat": { "message": "This isn't an AutoClean History backup file" },
+  "importNewer": { "message": "This backup was made by a newer version of AutoClean History. Update the extension first." },
   "importTooMany": { "message": "That would be more than $1 sites, which is over the limit" },
   "importEmpty": { "message": "There are no usable sites or settings in this file" },
   "importFailed": { "message": "Couldn't import: $1" },
@@ -125,5 +150,5 @@
   "closeLi1": { "message": "History stays while you use the site, and is deleted when its tab closes" },
   "closeLi2": { "message": "Several tabs open → deleted when the last one closes" },
   "closeLi3": { "message": "Closed the whole browser at once → cleaned up at next start" },
-  "footnote": { "message": "Everything stays on this device. History Clean sends no data anywhere and deletes browsing history only (not cookies or cache)." }
+  "footnote": { "message": "Everything stays on this device. AutoClean History sends no data anywhere and only deletes data of the sites in your list." }
 }

@@ -1,4 +1,4 @@
-/* History Clean — "redaction" theme
+/* AutoClean History — "redaction" theme
    ฟอนต์ (OFL) ฝังอยู่ใน extension: fonts/ — ไม่โหลดจากเน็ต = ไม่รั่วข้อมูลไปที่ไหน */
 @import url("fonts/fonts.css");
 
@@ -565,6 +565,24 @@ body.options { min-height: 100vh; }
 }
 .switch:checked { background: var(--hot); }
 .switch:checked::after { transform: translateX(16px); }
+.switch:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+
+/* "+ cookies" ต่อเว็บ */
+.switch-sm { width: 28px; height: 16px; }
+.switch-sm::after { top: 2px; left: 2px; width: 12px; height: 12px; }
+.switch-sm:checked::after { transform: translateX(12px); }
+.data-switch { display: inline-flex; align-items: center; gap: 6px; margin-top: 4px; font-size: 11.5px; color: var(--ink-3); cursor: pointer; justify-self: start; }
+.data-switch:has(:checked) { color: var(--hot); }
+.chip.data { box-shadow: inset 0 0 0 1px currentColor; }
+
+/* หน้าต้อนรับ */
+.welcome { padding: 20px; margin: 24px 0 28px; display: grid; gap: 10px; border-top: 3px solid var(--hot); }
+.welcome[hidden] { display: none; }
+.welcome h2 { margin: 0; font-family: var(--f-display); font-size: 20px; }
+.welcome p { margin: 0; color: var(--ink-2); }
+.welcome ol { margin: 0; padding-left: 20px; display: grid; gap: 6px; color: var(--ink-2); }
+.welcome .row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 4px; }
+.add-form .check-row input { accent-color: var(--hot); }
 
 .modes { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 .mode-card { padding: 16px; border-top: 3px solid var(--hot); display: grid; gap: 6px; align-content: start; }
