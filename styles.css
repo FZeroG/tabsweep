@@ -571,8 +571,31 @@ body.options { min-height: 100vh; }
 .switch-sm { width: 28px; height: 16px; }
 .switch-sm::after { top: 2px; left: 2px; width: 12px; height: 12px; }
 .switch-sm:checked::after { transform: translateX(12px); }
-.data-switch { display: inline-flex; align-items: center; gap: 6px; margin-top: 4px; font-size: 11.5px; color: var(--ink-3); cursor: pointer; justify-self: start; }
+.switches { display: flex; flex-wrap: wrap; gap: 4px 14px; margin-top: 4px; }
+.mini-switch { display: inline-flex; align-items: center; gap: 6px; font-size: 11.5px; color: var(--ink-3); cursor: pointer; }
+.mini-switch:has(:disabled) { cursor: default; opacity: 0.7; }
 .data-switch:has(:checked) { color: var(--hot); }
+.hide-switch:has(:checked) { color: var(--ink); }
+.hide-switch .switch:checked { background: var(--ink); }
+
+/* รหัสผ่านซ่อนเว็บ */
+.lock-row { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px; padding: 8px 14px; border-bottom: 1px solid var(--line); font-size: 12px; color: var(--ink-3); }
+.lock-row[hidden] { display: none; }
+.lock-row .link { font-size: 12px; }
+.lock-row.on svg { color: var(--hot); }
+.lock-row.on #lockStatus { color: var(--ink); font-weight: 600; }
+.lock-row .link[hidden] { display: none; }
+.btn-danger { background: var(--err); color: #fff; border-color: var(--err); }
+.btn-danger:hover { background: color-mix(in srgb, var(--err) 85%, #000); }
+dialog.modal { border: 1px solid var(--line); border-radius: var(--radius); padding: 0; background: var(--sheet); color: var(--ink); width: min(380px, calc(100vw - 32px)); box-shadow: 0 24px 60px -20px rgba(0, 0, 0, 0.45); }
+dialog.modal::backdrop { background: rgba(10, 10, 12, 0.45); }
+.dlg { display: grid; gap: 12px; padding: 18px; }
+.dlg h2 { margin: 0; font-family: var(--f-display); font-size: 17px; }
+.dlg-note { margin: 0; font-size: 12.5px; color: var(--ink-2); }
+.dlg-field { display: grid; gap: 4px; font-size: 12.5px; color: var(--ink-2); }
+.dlg-err { margin: 0; min-height: 1.2em; font-size: 12.5px; color: var(--err); }
+.dlg-actions { display: flex; justify-content: flex-end; align-items: center; gap: 8px; flex-wrap: wrap; }
+.dlg-extra { margin-right: auto; font-size: 12px; }
 .chip.data { box-shadow: inset 0 0 0 1px currentColor; }
 
 /* หน้าต้อนรับ */

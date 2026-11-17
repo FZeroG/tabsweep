@@ -1,6 +1,6 @@
 # AutoClean History
 
-A small Edge extension that automatically keeps the sites you pick out of your browsing history, and only those sites.
+A small Edge extension that keeps the sites you pick out of your browsing history and leaves every other site alone.
 
 It started with a small annoyance: every time I logged in to a site I didn't want in my history, I had to go back and delete the entries one by one afterwards. I didn't want to use InPrivate or wipe the whole browser either. So now you add a site once, choose when its history should go, and AutoClean History handles the rest. Your other history, logins and restorable tabs stay as they are.
 
@@ -18,16 +18,17 @@ Each site in your list gets one of two modes:
 On top of that:
 
 - **+ cookies** (per site, off by default) also deletes that site's cookies, cache and site storage when its last tab closes, so you're signed out too. It never does this while the site is open (except when you press Delete now), and it's skipped at browser start for tabs that were restored. Browsers remove cookies for the whole main domain, so turning it on for `news.example.com` signs you out of all of `example.com`. Storage of subdomains you didn't open in that browser session may be left behind.
-- **Scheduled clean** (off by default) fully cleans every site in the list every hour, 6 or 12 hours, day or week, even if the tab is open. The timer doesn't restart when you restart the browser; a missed run happens at the next start.
+- **Scheduled clean** (off by default) deletes all history of every site in the list every hour, 6 or 12 hours, day or week, even if the tab is open. The timer doesn't restart when you restart the browser; a missed run happens at the next start.
 
 Adding `youtube.com` also covers `m.youtube.com`, `music.youtube.com` and so on, but not look-alikes like `notyoutube.com`. Shared zones like `co.th` or `co.uk` are rejected on purpose, since they'd wipe history for thousands of unrelated sites.
 
 Other bits:
 
-- A **Delete now** button that shows exactly which sites it's about to clean, then tells you how many entries were removed per site.
+- A **Delete now** button that lists the sites it's about to clean, then tells you how many entries it removed from each.
 - An optional count on the toolbar icon (items deleted since the browser started).
 - An optional popup that drops down from the icon after a cleanup and closes itself after 4 seconds.
-- **Hide site names**: the list, the popup and the cleanup popup show `••••••` instead of the names, for when someone's looking at your screen. Click the eye icon to peek; it hides again when you close the page. This only masks the screen, the list itself is still stored as plain text in extension storage.
+- **Hide sites**: hide one site with the Hide switch on its row, or all of them with **Hide all sites**. Hidden sites show as `••••••` in Settings, and the popup leaves them out of the chips, the cleanup popup and the current-site card (which then looks like a non-web page). Click the eye icon to see them; closing the page hides them again. Deleting works the same.
+- **Optional password**: if you set one, it's needed to see hidden sites, unhide them, import or export. It's stored as a salted PBKDF2-SHA256 hash (600,000 iterations), never the password itself, and can't be recovered: "Forgot password?" deletes the hidden sites and the password so you can add them again. This is a screen lock only. The list itself is stored as plain text in extension storage, so someone who opens the extension's DevTools can still read it.
 - **Backup**: export your list and settings to a `.json` file and import it on another computer. Before anything is saved you get a preview: add to your list or replace it, how many sites are new, which entries were skipped, and a warning for sites whose past history will be deleted right away. There's an Undo afterwards. The file is plain text, so keep it somewhere private.
 - A short welcome guide when you first install it.
 - English and Thai UI. It follows your browser language by default, and you can switch it in Settings.
@@ -35,7 +36,7 @@ Other bits:
 
 ## Privacy
 
-Everything runs on your machine. There are no servers, no analytics and no network requests. Your site list stays in local extension storage and isn't synced anywhere. AutoClean History only deletes data of the sites in your list: their history, plus their cookies and cache if you turned on "+ cookies" for them. It never reads cookies, and saved passwords are left alone.
+Everything runs on your machine and makes no network requests. Your site list stays in local extension storage, and the extension doesn't sync it anywhere. AutoClean History only deletes data of the sites in your list: their history, plus their cookies and cache if you turned on "+ cookies" for them. It never reads cookies, and saved passwords are left alone.
 
 Full policy: https://fzerog.github.io/tabsweep/privacy.html
 

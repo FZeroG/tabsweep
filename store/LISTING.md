@@ -54,35 +54,35 @@ https://fzerog.github.io/tabsweep/privacy.html
 
 **Extension name / Short description:** มาจาก manifest อัตโนมัติ (แก้ในหน้าร้านไม่ได้)
 - Name: `AutoClean History: Delete Chosen Sites`
-- Short description: `Delete history, cookies and cache of only the sites you choose: on visit, when the tab closes or on a schedule. The rest stays.`
+- Short description: `Delete history, cookies and cache of the sites you choose: on visit, on tab close or on a schedule. Other sites stay.`
 
 **Description:**
 ```
 Ever had to log in to a site you'd rather not keep in your history, then go back and delete it entry by entry? AutoClean History does it for you.
 
-No need to wipe your whole browser. AutoClean History only cleans the sites you choose. The rest of your history, your other logins and your restorable tabs stay exactly as they are.
+You pick the sites. AutoClean History cleans those and leaves the rest of your history, your other logins and your restorable tabs alone.
 
-Add a site once, pick how it should be cleaned, and it's handled automatically:
+Add a site once and choose a mode:
 
-• Delete on visit — pages from the site are removed from history the moment you open them, so nothing is ever kept.
-• Delete on tab close — history stays while you're using the site, and is wiped as soon as you close its last tab. If the browser is closed all at once, leftovers are cleaned at the next start.
-• Scheduled clean — optionally clean every listed site every hour, 6 or 12 hours, day or week.
+• Delete on visit: AutoClean History removes each page from history as you open it.
+• Delete on tab close: you keep the history while you use the site. When you close its last tab, AutoClean History deletes it. If you close the whole browser at once, it cleans up at the next start.
+• Scheduled clean (optional): cleans every listed site every hour, 6 or 12 hours, day or week.
 
 Features
-• + cookies (per site, optional): also delete that site's cookies, cache and site data when its last tab closes, so you're signed out too.
-• Covers subdomains automatically (youtube.com also covers m.youtube.com and music.youtube.com) without touching look-alike sites.
-• "Delete now" button that clearly lists which sites will be cleaned and reports how many items were removed per site.
-• Hide site names: the list shows •••••• instead of names, so people looking at your screen can't see them. Click the eye to peek.
+• + cookies (per site, optional): also deletes that site's cookies, cache and site data when its last tab closes, so you sign out too.
+• Covers subdomains: youtube.com includes m.youtube.com and music.youtube.com, and leaves look-alike sites alone.
+• "Delete now" lists the sites it will clean and tells you how many items it removed from each.
+• Hide sites: hide some or all of your sites from people looking at your screen. Hidden sites show as •••••• in settings and stay out of the popup. Set a password if you want one.
 • Backup: export your list and settings to a file and import them on another computer, with a preview and Undo.
-• Optional counter on the toolbar icon, and an optional popup that shows what was just cleaned, then closes itself.
-• A short welcome guide on first install. English and Thai, light and dark themes.
+• A counter on the toolbar icon and a popup that shows what it cleaned, both optional.
+• A welcome guide on first install. English and Thai, light and dark themes.
 
-Privacy first
-• Runs 100% on your device. No servers, no analytics, no ads, no network requests at all.
-• Only deletes data of the sites in your list. Saved passwords are never touched.
-• Requests only the permissions it needs.
+Privacy
+• Runs on your device and makes no network requests. Your list never leaves your computer.
+• Deletes data of the sites in your list. Your saved passwords stay.
+• Uses five permissions, each explained in the privacy policy.
 
-Note: AutoClean History deletes data stored in your browser. Activity saved in online accounts (for example Google My Activity or your Microsoft account) is managed by those services.
+Note: AutoClean History deletes data stored in your browser. Google My Activity and your Microsoft account keep their own activity, so manage that on their sites.
 ```
 
 **Search terms** (สูงสุด 7 คำ/วลี, วลีละ ≤30 ตัวอักษร, รวม ≤21 คำ):
@@ -110,29 +110,29 @@ auto clean
 ```
 ลำบากไหม ทุกครั้งที่ต้องล็อกอินเว็บที่ไม่อยากให้มีในประวัติ แล้วต้องมานั่งไล่ลบทีละรายการ? AutoClean History ช่วยจัดการให้
 
-ไม่ต้องล้างทั้ง browser — AutoClean History ลบเฉพาะเว็บที่คุณเลือก ส่วนประวัติเว็บอื่น การล็อกอินเว็บอื่น และแท็บที่กู้คืนได้ยังอยู่ครบเหมือนเดิม
+คุณเลือกเว็บเอง AutoClean History ลบแค่เว็บเหล่านั้น ประวัติเว็บอื่น การล็อกอินเว็บอื่น และแท็บที่กู้คืนได้ยังอยู่ครบ
 
-เพิ่มเว็บครั้งเดียว เลือกวิธีลบ แล้วที่เหลือทำงานอัตโนมัติ:
+เพิ่มเว็บครั้งเดียวแล้วเลือกโหมด:
 
-• ลบทันทีตอนเข้า — หน้าเว็บจะถูกลบออกจากประวัติทันทีที่เปิด ไม่มีอะไรค้าง
-• ลบตอนปิดแท็บ — ระหว่างใช้งานยังเห็นประวัติตามปกติ พอปิดแท็บสุดท้ายของเว็บนั้นก็ลบให้ทันที ถ้าปิด browser ทีเดียวทั้งหมด จะเก็บตกให้ตอนเปิดครั้งถัดไป
-• ลบตามเวลา — ตั้งให้ลบทุกเว็บในรายการทุกชั่วโมง ทุก 6 หรือ 12 ชั่วโมง ทุกวัน หรือทุกสัปดาห์ (ไม่บังคับ)
+• ลบทันทีตอนเข้า: ลบหน้าเว็บออกจากประวัติตอนที่คุณเปิด
+• ลบตอนปิดแท็บ: ระหว่างใช้ยังเห็นประวัติ พอปิดแท็บสุดท้ายก็ลบให้ ถ้าปิด browser ทีเดียวทั้งหมด จะเก็บตกตอนเปิดครั้งถัดไป
+• ลบตามเวลา (ไม่บังคับ): ลบทุกเว็บในรายการทุกชั่วโมง ทุก 6 หรือ 12 ชั่วโมง ทุกวัน หรือทุกสัปดาห์
 
 ความสามารถ
-• + cookies (เลือกเป็นรายเว็บ): ลบ cookies, cache และข้อมูลเว็บของเว็บนั้นด้วยตอนปิดแท็บสุดท้าย ให้ logout ออกไปด้วยเลย
-• ครอบคลุม subdomain อัตโนมัติ (ใส่ youtube.com ก็ครอบคลุม m.youtube.com และ music.youtube.com) โดยไม่โดนเว็บที่ชื่อคล้ายกัน
-• ปุ่ม "ลบเดี๋ยวนี้" บอกชัดว่าจะลบเว็บไหนบ้าง และสรุปจำนวนที่ลบแยกรายเว็บ
-• ซ่อนชื่อเว็บ: รายการแสดงเป็น •••••• แทนชื่อเว็บ กันคนแอบมองจอ กดรูปตาเพื่อดูชั่วคราว
-• สำรองข้อมูล: ส่งออกรายการเว็บและการตั้งค่าเป็นไฟล์ แล้วนำเข้าในเครื่องอื่นได้ มีหน้าตัวอย่างก่อนนำเข้าและปุ่มย้อนกลับ
-• ตัวเลขบนไอคอน และ popup แจ้งผลการลบที่ปิดเองได้ (เปิด/ปิดได้)
-• หน้าแนะนำการใช้งานตอนติดตั้งครั้งแรก รองรับภาษาไทยและอังกฤษ ทั้งธีมสว่างและมืด
+• + cookies (เลือกเป็นรายเว็บ): ลบ cookies, cache และข้อมูลเว็บด้วยตอนปิดแท็บสุดท้าย คุณจะ logout จากเว็บนั้นไปด้วย
+• ครอบคลุม subdomain: ใส่ youtube.com ก็รวม m.youtube.com และ music.youtube.com แต่ไม่ยุ่งกับเว็บชื่อคล้าย
+• ปุ่ม "ลบเดี๋ยวนี้" บอกว่าจะลบเว็บไหน และลบไปกี่รายการต่อเว็บ
+• ซ่อนเว็บ: ซ่อนบางเว็บหรือทุกเว็บ กันคนแอบมองจอ เว็บที่ซ่อนแสดงเป็น •••••• ในหน้าตั้งค่า และไม่โผล่ใน popup ตั้งรหัสผ่านไว้เปิดดูได้
+• สำรองข้อมูล: ส่งออกรายการและการตั้งค่าเป็นไฟล์ แล้วนำเข้าในเครื่องอื่น มีหน้าตัวอย่างและปุ่มย้อนกลับ
+• ตัวเลขบนไอคอน และ popup บอกผลการลบ เปิดหรือปิดได้
+• หน้าแนะนำตอนติดตั้งครั้งแรก มีภาษาไทยและอังกฤษ ธีมสว่างและมืด
 
-ความเป็นส่วนตัวมาก่อน
-• ทำงานในเครื่องของคุณ 100% ไม่มีเซิร์ฟเวอร์ ไม่มีระบบวิเคราะห์ ไม่มีโฆษณา และไม่มีการเชื่อมต่อเครือข่ายเลย
-• ลบเฉพาะข้อมูลของเว็บในรายการ ไม่ยุ่งกับรหัสผ่านที่บันทึกไว้
-• ขอสิทธิ์เท่าที่จำเป็นเท่านั้น
+ความเป็นส่วนตัว
+• ทำงานในเครื่องคุณ ไม่เชื่อมต่อเครือข่าย รายการเว็บไม่ออกจากเครื่อง
+• ลบเฉพาะข้อมูลของเว็บในรายการ รหัสผ่านที่บันทึกไว้อยู่ครบ
+• ใช้สิทธิ์ 5 อย่าง อธิบายไว้ทุกอย่างในนโยบายความเป็นส่วนตัว
 
-หมายเหตุ: AutoClean History ลบข้อมูลที่เก็บใน browser ส่วนกิจกรรมที่บันทึกในบัญชีออนไลน์ (เช่น Google My Activity หรือบัญชี Microsoft) ต้องจัดการในบริการนั้นๆ
+หมายเหตุ: AutoClean History ลบข้อมูลใน browser ส่วนกิจกรรมใน Google My Activity หรือบัญชี Microsoft ต้องจัดการที่เว็บของบริการนั้น
 ```
 
 **Search terms:**
@@ -157,12 +157,12 @@ AutoClean History has no login and no network access.
 
 How to test:
 1. Installing opens the options page with a short welcome guide (options.html?welcome=1). Options can also be opened via right-click on the toolbar icon > Extension options.
-2. Add "example.com" with mode "Delete on visit". Visit https://example.com, then open edge://history — the visit is not listed.
-3. Change the mode to "Delete on tab close". Visit https://example.com — the visit appears in edge://history. Close the tab — the entry is removed.
-4. "+ cookies" (new in 1.4.0, uses the browsingData permission): turn it on for a site in the list, sign in to that site, close its last tab, then open it again — you are signed out. Cookies are never cleared while the site is open, except when the user clicks "Delete now".
+2. Add "example.com" with mode "Delete on visit". Visit https://example.com, then open edge://history. The visit is not listed.
+3. Change the mode to "Delete on tab close". Visit https://example.com and the visit appears in edge://history. Close the tab and the entry disappears.
+4. "+ cookies" (new in 1.4.0, uses the browsingData permission): turn it on for a site in the list, sign in to that site, close its last tab, then open it again. You are signed out. Cookies are never cleared while the site is open, except when the user clicks "Delete now".
 5. "Scheduled clean" (new in 1.4.0) in the Behavior section: choose an interval; every listed site is fully cleaned on that schedule (chrome.alarms).
 6. "Delete now" in the popup or options removes all past history of the listed sites and shows a per-site count.
-7. "Hide site names" in the Site list section shows names as dots; the eye button reveals them temporarily. Display-only.
+7. Site list section: "Hide all sites" or the per-site "Hide" switch shows names as dots and leaves those sites out of the popup; the eye button reveals them temporarily. Optional password ("Set password"): stored only as a salted PBKDF2 hash in chrome.storage.local, required to reveal, unhide, import or export. Display-only; deletion is unchanged.
 8. "Backup" section: "Export to file" saves a JSON file locally (Blob + download link, no downloads permission, nothing sent anywhere). "Import from file" reads a user-selected JSON file, validates it, and shows a preview; nothing is saved until "Import" is clicked, and Undo is offered afterwards.
 
 The extension was renamed from "TabSweep" to "AutoClean History" in 1.4.0. New permission: browsingData (used only for the optional per-site "+ cookies" feature).

@@ -52,6 +52,10 @@
           <input id="addData" type="checkbox">
           <span data-i18n="addDataLabel"></span>
         </label>
+        <label class="check-row" data-i18n-attr="title:hideTitle">
+          <input id="addHidden" type="checkbox">
+          <span data-i18n="addHiddenLabel"></span>
+        </label>
         <div id="hint" class="hint" aria-live="polite"></div>
       </form>
     </section>
@@ -68,6 +72,13 @@
             <span id="hideNamesSlot"></span>
           </label>
           <span id="eyeSlot"></span>
+        </div>
+        <div id="lockRow" class="lock-row" hidden>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>
+          <span id="lockStatus" class="muted"></span>
+          <button id="lockSet" class="link" type="button"></button>
+          <button id="lockRemove" class="link" type="button" data-i18n="lockRemove" hidden></button>
+          <button id="lockForgot" class="link" type="button" data-i18n="lockForgot"></button>
         </div>
         <div id="toolbar" class="toolbar" hidden>
           <input id="filter" class="input" spellcheck="false" data-i18n-attr="placeholder:filterPlaceholder;aria-label:filterPlaceholder">

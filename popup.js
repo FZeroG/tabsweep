@@ -1,8 +1,9 @@
 import { getSettings, saveSettings, normalizeDomain, findSite, isTooBroad } from "./lib/sites.js";
 import {
-  el, modeSeg, modeName, monogram, setMsg, runSweep, siteChips, dataSwitch,
-  setHidden, isHidden, shown, spoken, siteMonogram, eyeButton,
+  el, modeSeg, modeName, monogram, setMsg, runSweep, siteChips, dataSwitch, hideSwitch, unlock,
+  setPrivacy, setRevealed, isRevealed, isSecret, hasHiddenSites, siteMonogram, eyeButton,
 } from "./lib/ui.js";
+import { getLock, checkLock } from "./lib/lock.js";
 import { t, tNodes, localize, initI18n } from "./lib/i18n.js";
 
 const $ = (id) => document.getElementById(id);
@@ -33,27 +34,36 @@ function renderNotWeb(card) {
   );
 }
 
-function renderTracked(card, site) {
+function setFlag(domain, key, on) {
+  return updateSites((list) => list.map((s) => {
+    if (s.domain !== domain) return s;
+    const { [key]: _drop, ...rest } = s;
+    return on ? { ...rest, [key]: true } : rest;
+  }));
+}
+
+function renderTracked(card, site, hideAll) {
   card.append(
     el("div", { class: "site-head" },
       siteMonogram(site.domain, site.mode),
       el("div", { class: "info" },
-        el("div", { class: `site-domain${isHidden() ? " masked" : ""}`, title: spoken(site.domain) }, shown(site.domain)),
+        el("div", { class: "site-domain", title: site.domain }, site.domain),
         el("div", {}, el("span", { class: `pill ${site.mode}` }, t("inListPill", modeName(site.mode))))
       )
     ),
     modeSeg(site.mode, (mode) =>
       updateSites((list) => list.map((s) => (s.domain === site.domain ? { ...s, mode } : s)))
     ),
-    dataSwitch(site.data === true, (on) =>
-      updateSites((list) => list.map((s) => {
-        if (s.domain !== site.domain) return s;
-        const { data: _drop, ...rest } = s;
-        return on ? { ...rest, data: true } : rest;
-      }))
-    , site.domain),
+    el("div", { class: "switches" },
+      dataSwitch(site.data === true, (on) => setFlag(site.domain, "data", on), site.domain),
+      // ซ่อนได้เลย (การ์ดจะหายไปจาก popup) — ถ้าเห็นการ์ดของเว็บที่ซ่อน แปลว่าปลดล็อกอยู่แล้ว เลิกซ่อนได้
+      hideSwitch(hideAll || site.hidden === true, (on) => {
+        if (on) setRevealed(false);
+        return setFlag(site.domain, "hidden", on);
+      }, site.domain, hideAll)
+    ),
     el("div", { class: "site-foot" },
-      el("span", { class: "muted mono", style: "font-size:11.5px" }, `+ *.${shown(site.domain)}`),
+      el("span", { class: "muted mono", style: "font-size:11.5px" }, `+ *.${site.domain}`),
       el("button", {
         class: "link danger",
         onclick: () => updateSites((list) => list.filter((s) => s.domain !== site.domain)),
@@ -77,7 +87,8 @@ function renderUntracked(card, suggested) {
     const domain = normalizeDomain(input.value);
     if (!domain) return setMsg(msg, t("invalidDomain"), "err");
     if (isTooBroad(domain)) return setMsg(msg, t("domainTooBroad", domain), "err");
-    await updateSites((list) => [...list.filter((s) => s.domain !== domain), { domain, mode: seg.getValue() }]);
+    // มีอยู่แล้ว (เช่นเว็บที่ซ่อนไว้) → ไม่ทับ ไม่งั้นจะล้างค่าซ่อน/cookies ของเดิม
+    await updateSites((list) => (list.some((s) => s.domain === domain) ? list : [...list, { domain, mode: seg.getValue() }]));
   };
   input.addEventListener("keydown", (e) => e.key === "Enter" && add());
 
@@ -95,34 +106,37 @@ function renderUntracked(card, suggested) {
   );
 }
 
-// ซ่อนชื่อเว็บ: ปุ่มตาใน header กดดูชั่วคราว (ปิด popup แล้วกลับไปซ่อน)
-let hideNames = null;
+// เว็บที่ซ่อน: popup ไม่แสดงเลย (ไม่ใช่แค่เป็นจุด) — ปุ่มตาใน header ปลดล็อกดูชั่วคราว (ปิด popup แล้วซ่อนเหมือนเดิม)
 let lastBanner = null;
-const eye = eyeButton(() => {
-  setHidden(!isHidden());
-  render();
+const eye = eyeButton(async () => {
+  if (isRevealed()) setRevealed(false);
+  else {
+    await unlock(await getLock(), checkLock, {
+      onForgot: () => chrome.runtime.openOptionsPage(), // ลืมรหัส → จัดการในหน้าตั้งค่า
+    });
+  }
+  await render();
   if (lastBanner && !$("banner").hidden) showBanner(lastBanner, false);
 });
 $("optionsBtn").before(eye);
+
+function applyPrivacy({ sites, hideNames }) {
+  setPrivacy(sites, hideNames);
+  eye.hidden = !hasHiddenSites();
+  eye.sync();
+}
 // ตั้งค่าซ่อนก่อนวาดอะไรที่มีชื่อเว็บ (แบนเนอร์ด้านล่างวาดก่อน render ครั้งแรก)
-hideNames = (await getSettings()).hideNames;
-setHidden(hideNames);
-eye.hidden = !hideNames;
-eye.sync();
+applyPrivacy(await getSettings());
 
 async function render() {
   const settings = await getSettings();
   const { sites } = settings;
-  if (settings.hideNames !== hideNames) {
-    hideNames = settings.hideNames;
-    setHidden(hideNames);
-    eye.hidden = !hideNames;
-    eye.sync();
-  }
-  countEl.textContent = sites.length;
+  applyPrivacy(settings);
+  const visible = sites.filter((s) => !isSecret(s.domain));
+  countEl.textContent = visible.length;
   $("sweepBtn").disabled = sites.length === 0;
   $("targets").replaceChildren(
-    sites.length ? siteChips(sites, 5) : el("span", { class: "muted" }, t("noSites"))
+    sites.length ? siteChips(sites, 5, { omitSecret: true }) : el("span", { class: "muted" }, t("noSites"))
   );
 
   const card = $("siteCard");
@@ -130,11 +144,13 @@ async function render() {
 
   if (!tabUrl || !/^https?:/i.test(tabUrl)) return renderNotWeb(card);
   const site = findSite(tabUrl, sites);
-  if (site) renderTracked(card, site);
+  // อยู่บนเว็บที่ซ่อน → ทำเหมือนไม่ใช่เว็บ ไม่บอกว่าเว็บนี้อยู่ในรายการ
+  if (site && isSecret(site.domain)) return renderNotWeb(card);
+  if (site) renderTracked(card, site, settings.hideNames);
   else renderUntracked(card, normalizeDomain(tabUrl));
 }
 
-$("sweepBtn").addEventListener("click", () => runSweep($("sweepBtn"), $("result")));
+$("sweepBtn").addEventListener("click", () => runSweep($("sweepBtn"), $("result"), { omitSecret: true }));
 for (const id of ["optionsBtn", "manageBtn"]) {
   $(id).addEventListener("click", () => chrome.runtime.openOptionsPage());
 }
@@ -171,8 +187,8 @@ function showBanner(ev, autoClose) {
     el("div", { class: "banner-title" }, t("bannerTitle", total.toLocaleString())),
     el("div", { class: "banner-sub" }, REASON[ev.reason] ? t(REASON[ev.reason]) : ""),
     el("div", { class: "chips" },
-      ...ev.items.map((i) => el("span", { class: `chip${isHidden() ? " masked" : ""}` },
-        el("span", { class: "dot" }), `${shown(i.domain)} · ${i.count}`))
+      ...ev.items.filter((i) => !isSecret(i.domain)).map((i) => el("span", { class: "chip" },
+        el("span", { class: "dot" }), `${i.domain} · ${i.count}`))
     ),
     autoClose ? bar : null
   );
