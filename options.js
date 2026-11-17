@@ -1,5 +1,8 @@
 import { getSettings, saveSettings, normalizeDomain, isTooBroad } from "./lib/sites.js";
-import { el, modeSeg, monogram, setMsg, runSweep, siteChips, toggle } from "./lib/ui.js";
+import {
+  el, modeSeg, setMsg, runSweep, siteChips, toggle,
+  setHidden, isHidden, shown, spoken, siteMonogram, eyeButton,
+} from "./lib/ui.js";
 import { t, tNodes, localize, initI18n } from "./lib/i18n.js";
 
 const $ = (id) => document.getElementById(id);
@@ -73,7 +76,7 @@ $("addForm").addEventListener("submit", async (e) => {
   await updateSites((list) => [...list, { domain, mode: addSeg.getValue() }]);
   $("domain").value = "";
   updateHint();
-  showToast(t("toastAdded", domain));
+  showToast(t("toastAdded", shown(domain)));
 });
 
 // ---------- toast + undo ----------
@@ -109,22 +112,22 @@ function emptyState(text) {
 }
 
 function itemRow(site) {
-  return el("li", { class: "item" },
-    monogram(site.domain, site.mode),
+  return el("li", { class: `item${isHidden() ? " masked" : ""}` },
+    siteMonogram(site.domain, site.mode),
     el("div", { class: "info" },
-      el("span", { class: "domain" }, site.domain),
-      el("span", { class: "sub" }, `+ *.${site.domain}`)
+      el("span", { class: "domain" }, shown(site.domain)),
+      el("span", { class: "sub" }, `+ *.${shown(site.domain)}`)
     ),
     modeSeg(site.mode, (mode) =>
       updateSites((list) => list.map((s) => (s.domain === site.domain ? { ...s, mode } : s)))
-    , t("modeLabelFor", site.domain)),
+    , t("modeLabelFor", spoken(site.domain))),
     el("button", {
       class: "btn btn-ghost btn-icon remove",
       title: t("removeTitle"),
-      "aria-label": t("removeAria", site.domain),
+      "aria-label": t("removeAria", spoken(site.domain)),
       onclick: async () => {
         await updateSites((list) => list.filter((s) => s.domain !== site.domain));
-        showToast(t("toastRemoved", site.domain), () =>
+        showToast(t("toastRemoved", shown(site.domain)), () =>
           updateSites((list) => (list.some((s) => s.domain === site.domain) ? list : [...list, site]))
         );
       },
@@ -151,9 +154,10 @@ function renderList() {
   const q = $("filter").value.trim().toLowerCase();
   const sites = [...current]
     .sort((a, b) => a.domain.localeCompare(b.domain))
-    .filter((s) => !q || s.domain.includes(q));
+    .filter((s) => isHidden() || !q || s.domain.includes(q));
 
-  $("toolbar").hidden = current.length < 6;
+  // ตอนซ่อนชื่อ ช่องค้นหาไม่มีประโยชน์ (ผลเป็นจุดหมด) แถมใช้เดาชื่อในรายการได้
+  $("toolbar").hidden = current.length < 6 || isHidden();
   const list = $("list");
   if (current.length === 0) list.replaceChildren(emptyState(t("emptyList")));
   else if (sites.length === 0) list.replaceChildren(emptyState(t("noMatch", q)));
@@ -185,6 +189,16 @@ const notifyToggle = toggle("notify", false, (v) => saveSettings({ notify: v }))
 $("showBadgeSlot").replaceWith(badgeToggle);
 $("notifySlot").replaceWith(notifyToggle);
 
+// ซ่อนชื่อเว็บ: สวิตช์บันทึกค่า, ปุ่มตากดดูชั่วคราวเฉพาะหน้านี้
+let hideNames = false;
+const hideToggle = toggle("hideNames", false, (v) => saveSettings({ hideNames: v }));
+$("hideNamesSlot").replaceWith(hideToggle);
+const eye = eyeButton(() => {
+  setHidden(!isHidden());
+  renderNames();
+});
+$("eyeSlot").replaceWith(eye);
+
 $("testNotifyBtn").addEventListener("click", async () => {
   try {
     const res = await chrome.runtime.sendMessage({ type: "testPopup" });
@@ -197,19 +211,31 @@ $("testNotifyBtn").addEventListener("click", async () => {
 
 // ---------- render ----------
 
+// ส่วนที่มีชื่อเว็บ — วาดใหม่ตอนสลับซ่อน/แสดง
+function renderNames() {
+  eye.hidden = !hideNames;
+  eye.sync();
+  $("sweepTargets").replaceChildren(
+    current.length ? siteChips(current) : el("span", { class: "muted" }, t("noSites"))
+  );
+  renderList();
+}
+
 async function render() {
-  const { sites, sweepMinutes, showBadge, notify } = await getSettings();
+  const settings = await getSettings();
+  const { sites, sweepMinutes, showBadge, notify } = settings;
   badgeToggle.checked = showBadge;
   notifyToggle.checked = notify;
-  $("sweepTargets").replaceChildren(
-    sites.length ? siteChips(sites) : el("span", { class: "muted" }, t("noSites"))
-  );
+  hideToggle.checked = settings.hideNames;
+  // เพิ่งเปิดสวิตช์/เปิดหน้าใหม่ → เริ่มที่ซ่อนเสมอ; ปิดสวิตช์ → แสดงชื่อ
+  if (settings.hideNames !== hideNames) setHidden(settings.hideNames);
+  hideNames = settings.hideNames;
   current = sites;
   $("statAll").textContent = sites.length;
   $("statVisit").textContent = sites.filter((s) => s.mode === "visit").length;
   $("statClose").textContent = sites.filter((s) => s.mode === "close").length;
   $("sweepBtn").disabled = sites.length === 0;
-  renderList();
+  renderNames();
   renderInterval(sweepMinutes);
   updateHint();
 }

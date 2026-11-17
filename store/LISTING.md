@@ -1,4 +1,4 @@
-# TabSweep — ข้อมูลกรอกหน้าร้าน Edge Add-ons (Partner Center)
+# History Clean — ข้อมูลกรอกหน้าร้าน Edge Add-ons (Partner Center)
 
 ไฟล์นี้ใช้ copy ไปวางในแต่ละช่องของ Partner Center
 คู่มือทางการ: https://learn.microsoft.com/en-us/microsoft-edge/extensions/publish/publish-extension
@@ -8,7 +8,7 @@
 ---
 
 ## 1. Package
-- อัปโหลด `dist/tabsweep-1.2.0.zip` (สร้างด้วย `python -I tools/build_zip.py`)
+- อัปโหลด `dist/tabsweep-1.3.0.zip` (สร้างด้วย `python -I tools/build_zip.py`)
 
 ## 2. Availability
 - Visibility: **Public**
@@ -24,7 +24,7 @@
 
 ### Single purpose
 ```
-TabSweep deletes the browser history of websites the user explicitly adds to a list, either immediately when a page from that site is visited or when the user closes the site's last tab.
+History Clean deletes the browser history of websites the user explicitly adds to a list, either immediately when a page from that site is visited or when the user closes the site's last tab.
 ```
 
 ### Permission justification
@@ -52,22 +52,23 @@ https://fzerog.github.io/tabsweep/privacy.html
 ## 5. Store listing — English (en)
 
 **Extension name / Short description:** มาจาก manifest อัตโนมัติ (แก้ในหน้าร้านไม่ได้)
-- Name: `TabSweep: Site History Cleaner`
-- Short description: `Auto-delete browsing history for the sites you choose: instantly on visit, or when you close the tab. Works offline.`
+- Name: `History Clean: Auto-Delete Chosen Sites`
+- Short description: `Tired of deleting your history after logging in to sites you'd rather keep private? Auto-clean them on visit or when the tab closes.`
 
 **Description:**
 ```
-Keep chosen websites out of your browsing history — automatically.
+Ever had to log in to a site you'd rather not keep in your history, then go back and delete it entry by entry? History Clean does it for you.
 
-Add a site once, pick how it should be cleaned, and TabSweep takes care of the rest:
+Add a site once, pick how it should be cleaned, and History Clean takes care of the rest:
 
-• Delete on visit — pages from the site are removed from history the moment you open them, so nothing is ever kept. TabSweep also re-sweeps when you close the tab and on a light schedule, in case anything slips through.
+• Delete on visit — pages from the site are removed from history the moment you open them, so nothing is ever kept. History Clean also re-sweeps when you close the tab and on a light schedule, in case anything slips through.
 • Delete on tab close — history stays while you're using the site, and is wiped as soon as you close its last tab. If the browser is closed all at once, leftovers are cleaned at the next start.
 
 Features
 • Covers subdomains automatically (youtube.com also covers m.youtube.com and music.youtube.com) without touching look-alike sites.
 • "Delete now" button that clearly lists which sites will be cleaned and reports how many items were removed per site.
 • Optional counter on the toolbar icon, and an optional popup that drops down to show what was just cleaned, then closes itself.
+• Hide site names: the list shows •••••• instead of names, so people looking at your screen can't see them. Click the eye to peek.
 • Clean, simple interface in English and Thai, with light and dark themes.
 
 Privacy first
@@ -75,7 +76,7 @@ Privacy first
 • Deletes browsing history only — cookies, cache and saved passwords are not touched.
 • Requests only the permissions it needs.
 
-Note: TabSweep deletes the history stored in your browser. Activity saved in online accounts (for example Google My Activity or your Microsoft account) is managed by those services.
+Note: History Clean deletes the history stored in your browser. Activity saved in online accounts (for example Google My Activity or your Microsoft account) is managed by those services.
 ```
 
 **Search terms** (สูงสุด 7 คำ/วลี, วลีละ ≤30 ตัวอักษร, รวม ≤21 คำ):
@@ -90,20 +91,20 @@ site history
 ```
 
 **Logo:** `store/logo300.png`
-**Screenshots (1280×800):** `store/screenshot-1-popup-en.png`, `store/screenshot-2-banner-en.png`, `store/screenshot-3-options-en.png`
+**Screenshots (1280×800):** `store/screenshot-1-popup-en.png`, `store/screenshot-2-banner-en.png`, `store/screenshot-3-options-en.png`, `store/screenshot-4-hide-en.png`
 
 ---
 
 ## 6. Store listing — Thai (th)
 
-- Name (จาก manifest): `TabSweep: Site History Cleaner` (ชื่อเดียวกันทุกภาษา)
-- Short description (จาก manifest): `Auto-delete browsing history for the sites you choose: instantly on visit, or when you close the tab. Works offline.` (ภาษาอังกฤษทุกภาษา — คำอธิบายยาวด้านล่างยังเป็นภาษาไทยได้)
+- Name (จาก manifest): `History Clean: Auto-Delete Chosen Sites` (ชื่อเดียวกันทุกภาษา)
+- Short description (จาก manifest): `Tired of deleting your history after logging in to sites you'd rather keep private? Auto-clean them on visit or when the tab closes.` (ภาษาอังกฤษทุกภาษา — คำอธิบายยาวด้านล่างยังเป็นภาษาไทยได้)
 
 **Description:**
 ```
-ไม่ให้เว็บที่คุณเลือกค้างอยู่ในประวัติการเข้าเว็บ — แบบอัตโนมัติ
+ลำบากไหม ทุกครั้งที่ต้องล็อกอินเว็บที่ไม่อยากให้มีในประวัติ แล้วต้องมานั่งไล่ลบทีละรายการ? History Clean ช่วยจัดการให้
 
-เพิ่มเว็บครั้งเดียว เลือกวิธีลบ แล้ว TabSweep จัดการให้ที่เหลือ:
+เพิ่มเว็บครั้งเดียว เลือกวิธีลบ แล้ว History Clean จัดการให้ที่เหลือ:
 
 • ลบทันทีตอนเข้า — หน้าเว็บจะถูกลบออกจากประวัติทันทีที่เปิด ไม่มีอะไรค้าง และยังกวาดซ้ำตอนปิดแท็บกับตามรอบเวลาเบาๆ เผื่อมีรายการหลุด
 • ลบตอนปิดแท็บ — ระหว่างใช้งานยังเห็นประวัติตามปกติ พอปิดแท็บสุดท้ายของเว็บนั้นก็ลบให้ทันที ถ้าปิด browser ทีเดียวทั้งหมด จะเก็บตกให้ตอนเปิดครั้งถัดไป
@@ -112,6 +113,7 @@ site history
 • ครอบคลุม subdomain อัตโนมัติ (ใส่ youtube.com ก็ครอบคลุม m.youtube.com และ music.youtube.com) โดยไม่โดนเว็บที่ชื่อคล้ายกัน
 • ปุ่ม "ลบเดี๋ยวนี้" บอกชัดว่าจะลบเว็บไหนบ้าง และสรุปจำนวนที่ลบแยกรายเว็บ
 • ตัวเลขบนไอคอน และ popup แจ้งผลการลบที่เลื่อนลงมาแล้วปิดเอง (เปิด/ปิดได้)
+• ซ่อนชื่อเว็บ: รายการแสดงเป็น •••••• แทนชื่อเว็บ กันคนแอบมองจอ กดรูปตาเพื่อดูชั่วคราว
 • หน้าตาเรียบง่าย รองรับภาษาไทยและอังกฤษ ทั้งธีมสว่างและมืด
 
 ความเป็นส่วนตัวมาก่อน
@@ -119,7 +121,7 @@ site history
 • ลบเฉพาะประวัติการเข้าเว็บ — ไม่ยุ่งกับ cookies, cache หรือรหัสผ่านที่บันทึกไว้
 • ขอสิทธิ์เท่าที่จำเป็นเท่านั้น
 
-หมายเหตุ: TabSweep ลบประวัติที่เก็บใน browser ส่วนกิจกรรมที่บันทึกในบัญชีออนไลน์ (เช่น Google My Activity หรือบัญชี Microsoft) ต้องจัดการในบริการนั้นๆ
+หมายเหตุ: History Clean ลบประวัติที่เก็บใน browser ส่วนกิจกรรมที่บันทึกในบัญชีออนไลน์ (เช่น Google My Activity หรือบัญชี Microsoft) ต้องจัดการในบริการนั้นๆ
 ```
 
 **Search terms:**
@@ -134,13 +136,13 @@ privacy
 ```
 
 **Logo:** `store/logo300.png` (ใช้ Duplicate ได้)
-**Screenshots:** `store/screenshot-1-popup-th.png`, `store/screenshot-2-banner-th.png`, `store/screenshot-3-options-th.png`
+**Screenshots:** `store/screenshot-1-popup-th.png`, `store/screenshot-2-banner-th.png`, `store/screenshot-3-options-th.png`, `store/screenshot-4-hide-th.png`
 
 ---
 
 ## 7. Notes for certification
 ```
-TabSweep has no login and no network access.
+History Clean has no login and no network access.
 
 How to test:
 1. Open the extension options (right-click the toolbar icon > Extension options).
@@ -148,8 +150,11 @@ How to test:
 3. Change the mode to "Delete on tab close". Visit https://example.com — the visit appears in edge://history. Close the tab — the entry is removed.
 4. "Delete now" in the popup or options removes all past history of the listed sites and shows a per-site count.
 5. Optional: enable "Show a popup when deleting" and click "Test popup". It uses chrome.action.openPopup() and only opens while the browser window is focused.
+6. New in 1.3.0: turn on "Hide site names" in the Site list section. Names in the options page and popup show as dots; the eye button reveals them temporarily. This is display-only and does not change deletion.
 
-The UI is available in English and Thai (follows the browser language).
+The extension was renamed from "TabSweep" to "History Clean" in 1.3.0. Functionality and permissions are unchanged.
+
+The UI is available in English and Thai (follows the browser language, or can be changed in Options).
 ```
 
 ---

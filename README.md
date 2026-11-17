@@ -1,10 +1,12 @@
-# TabSweep
+# History Clean
 
 A small Edge extension that keeps the sites you pick out of your browsing history.
 
-I wanted a few sites to never show up in my history, without going InPrivate or clearing everything. So you add a site once, choose when its history should go, and TabSweep handles the rest.
+It started with a small annoyance: every time I logged in to a site I didn't want in my history, I had to go back and delete the entries one by one afterwards. I didn't want to use InPrivate or wipe everything either. So now you add a site once, choose when its history should go, and History Clean handles the rest.
 
-![TabSweep popup](store/screenshot-1-popup-en.png)
+(It was called TabSweep up to version 1.2.0.)
+
+![History Clean popup](store/screenshot-1-popup-en.png)
 
 ## What it does
 
@@ -20,12 +22,13 @@ Other bits:
 - A **Delete now** button that shows exactly which sites it's about to clean, then tells you how many entries were removed per site.
 - An optional count on the toolbar icon (items deleted since the browser started).
 - An optional popup that drops down from the icon after a cleanup and closes itself after 4 seconds.
+- **Hide site names**: the list, the popup and the cleanup popup show `••••••` instead of the names, for when someone's looking at your screen. Click the eye icon to peek; it hides again when you close the page. This only masks the screen, the list itself is still stored as plain text in extension storage.
 - English and Thai UI. It follows your browser language by default, and you can switch it in Settings.
 - Light and dark themes.
 
 ## Privacy
 
-Everything runs on your machine. There are no servers, no analytics and no network requests. Your site list stays in local extension storage and isn't synced anywhere. TabSweep only touches browsing history, so cookies, cache and saved passwords are left alone.
+Everything runs on your machine. There are no servers, no analytics and no network requests. Your site list stays in local extension storage and isn't synced anywhere. History Clean only touches browsing history, so cookies, cache and saved passwords are left alone.
 
 Full policy: https://fzerog.github.io/tabsweep/privacy.html
 
@@ -52,7 +55,7 @@ It should also work in Chrome 127+, since it only uses standard extension APIs, 
 
 ## Development
 
-There's no build step for the extension itself. Edit the files, then hit **Reload** on the TabSweep card in `edge://extensions`. Logs from the background worker are prefixed with `[TabSweep]` (Inspect views → service worker).
+There's no build step for the extension itself. Edit the files, then hit **Reload** on the History Clean card in `edge://extensions`. Logs from the background worker are prefixed with `[HistoryClean]` (Inspect views → service worker).
 
 Project layout:
 

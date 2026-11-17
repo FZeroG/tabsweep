@@ -1,7 +1,7 @@
 {
-  "extName": { "message": "TabSweep: Site History Cleaner" },
-  "extShortName": { "message": "TabSweep" },
-  "extDescription": { "message": "Auto-delete browsing history for the sites you choose: instantly on visit, or when you close the tab. Works offline." },
+  "extName": { "message": "History Clean: Auto-Delete Chosen Sites" },
+  "extShortName": { "message": "HistoryClean" },
+  "extDescription": { "message": "Tired of deleting your history after logging in to sites you'd rather keep private? Auto-clean them on visit or when the tab closes." },
 
   "modeVisit": { "message": "ลบทันทีตอนเข้า" },
   "modeClose": { "message": "ลบตอนปิดแท็บ" },
@@ -36,7 +36,7 @@
   "sweepFailed": { "message": "ลบไม่สำเร็จ: $1" },
   "popupUnsupported": { "message": "browser เวอร์ชันนี้ไม่รองรับการเปิด popup อัตโนมัติ" },
 
-  "optionsTitle": { "message": "TabSweep – ตั้งค่า" },
+  "optionsTitle": { "message": "History Clean – ตั้งค่า" },
   "langLabel": { "message": "ภาษา" },
   "langAuto": { "message": "อัตโนมัติ (ตามภาษา browser)" },
   "headline": { "message": "เว็บที่ต้องลบประวัติ" },
@@ -60,6 +60,11 @@
   "noMatch": { "message": "ไม่พบ \"$1\"" },
   "removeTitle": { "message": "เอาออก" },
   "removeAria": { "message": "เอา $1 ออกจากรายการ" },
+  "hideNamesLabel": { "message": "ซ่อนชื่อเว็บ" },
+  "hideNamesDesc": { "message": "แสดงเป็น •••••• แทนชื่อเว็บ ทั้งหน้านี้และ popup กันคนแอบมองจอ กดรูปตาเพื่อดูชั่วคราว" },
+  "revealNames": { "message": "แสดงชื่อเว็บ" },
+  "hideNamesNow": { "message": "ซ่อนชื่อเว็บอีกครั้ง" },
+  "hiddenSite": { "message": "เว็บที่ซ่อนไว้" },
 
   "secBehavior": { "message": "การทำงาน" },
   "autoSweepTitle": { "message": "ลบซ้ำอัตโนมัติ" },
@@ -90,5 +95,5 @@
   "closeLi1": { "message": "ระหว่างใช้ยังเห็นประวัติ ลบเมื่อปิดแท็บของเว็บนั้น" },
   "closeLi2": { "message": "เปิดหลายแท็บ → ลบตอนปิดแท็บสุดท้าย" },
   "closeLi3": { "message": "ปิด browser ทั้งหมดทีเดียว → เก็บตกตอนเปิดครั้งถัดไป" },
-  "footnote": { "message": "ข้อมูลทั้งหมดเก็บในเครื่องนี้ TabSweep ไม่ส่งข้อมูลออกไปที่ไหน และลบเฉพาะประวัติการเข้าเว็บ (ไม่ลบ cookies / cache)" }
+  "footnote": { "message": "ข้อมูลทั้งหมดเก็บในเครื่องนี้ History Clean ไม่ส่งข้อมูลออกไปที่ไหน และลบเฉพาะประวัติการเข้าเว็บ (ไม่ลบ cookies / cache)" }
 }

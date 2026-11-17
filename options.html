@@ -3,14 +3,14 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title data-i18n="optionsTitle">TabSweep</title>
+  <title data-i18n="optionsTitle">History Clean</title>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body class="options">
   <div class="wrap">
     <header class="masthead rise">
       <div>
-        <p class="wordmark"><span>Tab</span><span class="redact">Sweep</span></p>
+        <p class="wordmark"><span>History</span><span class="redact">Clean</span></p>
         <h1 data-i18n="headline"></h1>
       </div>
       <div class="masthead-side">
@@ -41,6 +41,16 @@
     <section class="section rise">
       <h2 class="section-title"><span class="num">02</span> <span data-i18n="secList"></span></h2>
       <div class="panel">
+        <div class="privacy-bar">
+          <label class="toggle-row" for="hideNames">
+            <span>
+              <b data-i18n="hideNamesLabel"></b>
+              <small data-i18n="hideNamesDesc"></small>
+            </span>
+            <span id="hideNamesSlot"></span>
+          </label>
+          <span id="eyeSlot"></span>
+        </div>
         <div id="toolbar" class="toolbar" hidden>
           <input id="filter" class="input" spellcheck="false" data-i18n-attr="placeholder:filterPlaceholder;aria-label:filterPlaceholder">
         </div>

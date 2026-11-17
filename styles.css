@@ -1,4 +1,4 @@
-/* TabSweep — "redaction" theme
+/* History Clean — "redaction" theme
    ฟอนต์ (OFL) ฝังอยู่ใน extension: fonts/ — ไม่โหลดจากเน็ต = ไม่รั่วข้อมูลไปที่ไหน */
 @import url("fonts/fonts.css");
 
@@ -460,6 +460,20 @@ body.options { min-height: 100vh; }
 .item .info { min-width: 0; display: grid; gap: 1px; }
 .item .domain { font-family: var(--f-mono); font-weight: 600; overflow-wrap: anywhere; }
 .item .sub { font-size: 11.5px; color: var(--ink-3); font-family: var(--f-mono); }
+
+/* ซ่อนชื่อเว็บ */
+.privacy-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 4px 14px;
+  border-bottom: 1px solid var(--line);
+}
+.privacy-bar .toggle-row { flex: 1; border-top: 0; }
+.masked .domain, .masked .sub, .site-domain.masked, .chip.masked { letter-spacing: 0.12em; }
+.masked .domain, .site-domain.masked { color: var(--ink-3); }
+.popup header .eye { margin-left: auto; }
+.btn[hidden] { display: none; }
 
 .empty { padding: 36px 16px; text-align: center; color: var(--ink-3); }
 .empty .bars { display: grid; gap: 6px; justify-items: center; margin-bottom: 14px; }

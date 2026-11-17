@@ -1,7 +1,7 @@
 {
-  "extName": { "message": "TabSweep: Site History Cleaner" },
-  "extShortName": { "message": "TabSweep" },
-  "extDescription": { "message": "Auto-delete browsing history for the sites you choose: instantly on visit, or when you close the tab. Works offline." },
+  "extName": { "message": "History Clean: Auto-Delete Chosen Sites" },
+  "extShortName": { "message": "HistoryClean" },
+  "extDescription": { "message": "Tired of deleting your history after logging in to sites you'd rather keep private? Auto-clean them on visit or when the tab closes." },
 
   "modeVisit": { "message": "Delete on visit" },
   "modeClose": { "message": "Delete on tab close" },
@@ -36,7 +36,7 @@
   "sweepFailed": { "message": "Couldn't delete: $1" },
   "popupUnsupported": { "message": "This browser version can't open the popup automatically" },
 
-  "optionsTitle": { "message": "TabSweep – Settings" },
+  "optionsTitle": { "message": "History Clean – Settings" },
   "langLabel": { "message": "Language" },
   "langAuto": { "message": "Auto (browser language)" },
   "headline": { "message": "Sites to keep out of history" },
@@ -60,6 +60,11 @@
   "noMatch": { "message": "No match for \"$1\"" },
   "removeTitle": { "message": "Remove" },
   "removeAria": { "message": "Remove $1 from the list" },
+  "hideNamesLabel": { "message": "Hide site names" },
+  "hideNamesDesc": { "message": "Shows •••••• instead of names here and in the popup, so people looking at your screen can't see them. Click the eye to peek." },
+  "revealNames": { "message": "Show site names" },
+  "hideNamesNow": { "message": "Hide site names again" },
+  "hiddenSite": { "message": "a hidden site" },
 
   "secBehavior": { "message": "Behavior" },
   "autoSweepTitle": { "message": "Automatic re-sweep" },
@@ -90,5 +95,5 @@
   "closeLi1": { "message": "History stays while you use the site, and is deleted when its tab closes" },
   "closeLi2": { "message": "Several tabs open → deleted when the last one closes" },
   "closeLi3": { "message": "Closed the whole browser at once → cleaned up at next start" },
-  "footnote": { "message": "Everything stays on this device. TabSweep sends no data anywhere and deletes browsing history only (not cookies or cache)." }
+  "footnote": { "message": "Everything stays on this device. History Clean sends no data anywhere and deletes browsing history only (not cookies or cache)." }
 }

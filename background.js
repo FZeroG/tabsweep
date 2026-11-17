@@ -15,7 +15,7 @@ const NOTIFY_DEBOUNCE_MS = 2000;            // รวมการลบที่
 const NOTIFY_THROTTLE_MS = 5 * 60_000;      // โหมด visit: เว็บเดียวกันเด้งได้ทุก 5 นาที
 
 function safe(promise) {
-  promise.catch((err) => console.error("[TabSweep]", err));
+  promise.catch((err) => console.error("[HistoryClean]", err));
 }
 
 // ---- Settings cache: onVisited / onUpdated ยิงบ่อยมาก ไม่ต้องอ่าน storage ทุกครั้ง ----
@@ -45,7 +45,7 @@ function addDeleted(n) {
       await chrome.storage.session.set({ deletedCount: next });
       await renderBadge(next);
     } catch (err) {
-      console.error("[TabSweep] badge", err); // ไม่ให้ chain พัง
+      console.error("[HistoryClean] badge", err); // ไม่ให้ chain พัง
     }
     return next;
   });
@@ -70,7 +70,7 @@ async function announce(reason, items) {
   try {
     await openPopup();
   } catch (err) {
-    console.debug("[TabSweep] เปิด popup ไม่ได้:", String(err));
+    console.debug("[HistoryClean] เปิด popup ไม่ได้:", String(err));
   }
 }
 

@@ -1,5 +1,8 @@
 import { getSettings, saveSettings, normalizeDomain, findSite, isTooBroad } from "./lib/sites.js";
-import { el, modeSeg, modeName, monogram, setMsg, runSweep, siteChips } from "./lib/ui.js";
+import {
+  el, modeSeg, modeName, monogram, setMsg, runSweep, siteChips,
+  setHidden, isHidden, shown, spoken, siteMonogram, eyeButton,
+} from "./lib/ui.js";
 import { t, tNodes, localize, initI18n } from "./lib/i18n.js";
 
 const $ = (id) => document.getElementById(id);
@@ -33,9 +36,9 @@ function renderNotWeb(card) {
 function renderTracked(card, site) {
   card.append(
     el("div", { class: "site-head" },
-      monogram(site.domain, site.mode),
+      siteMonogram(site.domain, site.mode),
       el("div", { class: "info" },
-        el("div", { class: "site-domain", title: site.domain }, site.domain),
+        el("div", { class: `site-domain${isHidden() ? " masked" : ""}`, title: spoken(site.domain) }, shown(site.domain)),
         el("div", {}, el("span", { class: `pill ${site.mode}` }, t("inListPill", modeName(site.mode))))
       )
     ),
@@ -43,7 +46,7 @@ function renderTracked(card, site) {
       updateSites((list) => list.map((s) => (s.domain === site.domain ? { ...s, mode } : s)))
     ),
     el("div", { class: "site-foot" },
-      el("span", { class: "muted mono", style: "font-size:11.5px" }, `+ *.${site.domain}`),
+      el("span", { class: "muted mono", style: "font-size:11.5px" }, `+ *.${shown(site.domain)}`),
       el("button", {
         class: "link danger",
         onclick: () => updateSites((list) => list.filter((s) => s.domain !== site.domain)),
@@ -85,8 +88,30 @@ function renderUntracked(card, suggested) {
   );
 }
 
+// ซ่อนชื่อเว็บ: ปุ่มตาใน header กดดูชั่วคราว (ปิด popup แล้วกลับไปซ่อน)
+let hideNames = null;
+let lastBanner = null;
+const eye = eyeButton(() => {
+  setHidden(!isHidden());
+  render();
+  if (lastBanner && !$("banner").hidden) showBanner(lastBanner, false);
+});
+$("optionsBtn").before(eye);
+// ตั้งค่าซ่อนก่อนวาดอะไรที่มีชื่อเว็บ (แบนเนอร์ด้านล่างวาดก่อน render ครั้งแรก)
+hideNames = (await getSettings()).hideNames;
+setHidden(hideNames);
+eye.hidden = !hideNames;
+eye.sync();
+
 async function render() {
-  const { sites } = await getSettings();
+  const settings = await getSettings();
+  const { sites } = settings;
+  if (settings.hideNames !== hideNames) {
+    hideNames = settings.hideNames;
+    setHidden(hideNames);
+    eye.hidden = !hideNames;
+    eye.sync();
+  }
   countEl.textContent = sites.length;
   $("sweepBtn").disabled = sites.length === 0;
   $("targets").replaceChildren(
@@ -130,6 +155,7 @@ function checkIcon() {
 }
 
 function showBanner(ev, autoClose) {
+  lastBanner = ev;
   const total = ev.items.reduce((n, i) => n + i.count, 0);
   const banner = $("banner");
   const bar = el("div", { class: "banner-bar" });
@@ -138,7 +164,8 @@ function showBanner(ev, autoClose) {
     el("div", { class: "banner-title" }, t("bannerTitle", total.toLocaleString())),
     el("div", { class: "banner-sub" }, REASON[ev.reason] ? t(REASON[ev.reason]) : ""),
     el("div", { class: "chips" },
-      ...ev.items.map((i) => el("span", { class: "chip" }, el("span", { class: "dot" }), `${i.domain} · ${i.count}`))
+      ...ev.items.map((i) => el("span", { class: `chip${isHidden() ? " masked" : ""}` },
+        el("span", { class: "dot" }), `${shown(i.domain)} · ${i.count}`))
     ),
     autoClose ? bar : null
   );
