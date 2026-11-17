@@ -104,7 +104,44 @@
     </section>
 
     <section class="section rise">
-      <h2 class="section-title"><span class="num">04</span> <span data-i18n="secModes"></span></h2>
+      <h2 class="section-title"><span class="num">04</span> <span data-i18n="secBackup"></span></h2>
+      <div class="panel setting backup">
+        <p data-i18n="backupDesc"></p>
+        <div class="row">
+          <button id="exportBtn" class="btn" type="button" data-i18n="exportBtn"></button>
+          <button id="importBtn" class="btn" type="button" data-i18n="importBtn"></button>
+          <input id="importFile" type="file" accept=".json,application/json" hidden>
+        </div>
+        <div id="backupMsg" class="msg" role="status"></div>
+        <div id="importPreview" class="import-preview" role="region" data-i18n-attr="aria-label:importPreviewLabel" tabindex="-1" hidden>
+          <p id="importFileInfo" class="import-file"></p>
+          <fieldset class="seg import-mode" data-i18n-attr="aria-label:importModeLabel">
+            <input type="radio" name="importMode" id="importMerge" value="merge" checked>
+            <label for="importMerge"><span class="dot"></span><span data-i18n="importModeMerge"></span></label>
+            <input type="radio" name="importMode" id="importReplace" value="replace">
+            <label for="importReplace"><span class="dot"></span><span data-i18n="importModeReplace"></span></label>
+          </fieldset>
+          <p id="importSummary"></p>
+          <div id="importAdded"></div>
+          <p id="importSkipped" class="muted" hidden></p>
+          <div id="importWarn" class="import-warn" hidden>
+            <p id="importWarnText"></p>
+            <div id="importWarnSites"></div>
+          </div>
+          <label id="importSettingsRow" class="check-row" hidden>
+            <input id="importSettings" type="checkbox" checked>
+            <span data-i18n="importWithSettings"></span>
+          </label>
+          <div class="row">
+            <button id="importConfirm" class="btn btn-ink" type="button" data-i18n="importConfirm"></button>
+            <button id="importCancel" class="btn btn-ghost" type="button" data-i18n="cancel"></button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section rise">
+      <h2 class="section-title"><span class="num">05</span> <span data-i18n="secModes"></span></h2>
       <div class="modes">
         <div class="panel mode-card">
           <h3><span class="pill visit" data-i18n="modeVisit"></span></h3>

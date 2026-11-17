@@ -490,6 +490,19 @@ body.options { min-height: 100vh; }
 
 .setting.wide { grid-column: 1 / -1; }
 
+/* สำรอง / นำเข้า */
+.import-preview { display: grid; gap: 10px; padding-top: 12px; border-top: 1px solid var(--line); }
+.import-preview[hidden], .import-warn[hidden], .check-row[hidden], .setting p[hidden] { display: none; }
+.import-preview:focus { outline: none; }
+.setting .import-file { font-family: var(--f-mono); font-size: 12px; overflow-wrap: anywhere; }
+.setting #importSummary { color: var(--ink); }
+.import-mode { justify-self: start; }
+.import-mode input:checked + label { background: color-mix(in srgb, var(--ink) 8%, transparent); color: var(--ink); }
+.import-mode input[value="replace"]:checked + label { background: var(--hot-soft); color: var(--hot); }
+.import-warn { display: grid; gap: 8px; padding: 10px 12px; border-radius: 8px; background: var(--hot-soft); }
+.setting .import-warn p { color: var(--hot); font-weight: 600; }
+.check-row { display: flex; gap: 8px; align-items: center; font-size: 12.5px; color: var(--ink-2); cursor: pointer; }
+
 /* chips: รายชื่อเว็บที่จะถูกลบ */
 .chips { display: flex; flex-wrap: wrap; gap: 6px; }
 .chip {

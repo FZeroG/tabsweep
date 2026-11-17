@@ -23,6 +23,7 @@ Other bits:
 - An optional count on the toolbar icon (items deleted since the browser started).
 - An optional popup that drops down from the icon after a cleanup and closes itself after 4 seconds.
 - **Hide site names**: the list, the popup and the cleanup popup show `••••••` instead of the names, for when someone's looking at your screen. Click the eye icon to peek; it hides again when you close the page. This only masks the screen, the list itself is still stored as plain text in extension storage.
+- **Backup**: export your list and settings to a `.json` file and import it on another computer. Before anything is saved you get a preview: add to your list or replace it, how many sites are new, which entries were skipped, and a warning for sites whose past history will be deleted right away. There's an Undo afterwards. The file is plain text, so keep it somewhere private.
 - English and Thai UI. It follows your browser language by default, and you can switch it in Settings.
 - Light and dark themes.
 
@@ -31,6 +32,8 @@ Other bits:
 Everything runs on your machine. There are no servers, no analytics and no network requests. Your site list stays in local extension storage and isn't synced anywhere. History Clean only touches browsing history, so cookies, cache and saved passwords are left alone.
 
 Full policy: https://fzerog.github.io/tabsweep/privacy.html
+
+Imported files are treated as untrusted. They're only parsed as JSON, never run; only known fields are read, every domain goes through the same checks as typing it in by hand (shared zones like `co.th` are rejected), and files over 512 KB or with more than 1,000 sites are refused. Extension pages also run under a strict Content Security Policy (`script-src 'self'; object-src 'none'; base-uri 'none'`).
 
 ## Install
 
@@ -65,6 +68,7 @@ popup.*, options.* the two UI pages
 lib/sites.js       domain matching and history sweeping
 lib/i18n.js        translations (loads _locales/<lang>/messages.json)
 lib/ui.js          small DOM helpers shared by both pages
+lib/backup.js      backup file format, import validation and merge/replace planning
 _locales/          en and th strings
 fonts/             bundled fonts (SIL OFL 1.1, licenses included)
 icons/             toolbar icons

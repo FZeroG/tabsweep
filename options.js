@@ -4,6 +4,7 @@ import {
   setHidden, isHidden, shown, spoken, siteMonogram, eyeButton,
 } from "./lib/ui.js";
 import { t, tNodes, localize, initI18n } from "./lib/i18n.js";
+import { buildBackup, backupFileName, parseBackup, planImport, MAX_FILE_BYTES, MAX_SITES } from "./lib/backup.js";
 
 const $ = (id) => document.getElementById(id);
 const INTERVALS = [1, 5, 10, 15, 30, 60];
@@ -209,6 +210,125 @@ $("testNotifyBtn").addEventListener("click", async () => {
   }
 });
 
+// ---------- backup: export / import ----------
+// export: สร้างไฟล์ในหน้านี้เองด้วย Blob + <a download> (ไม่ต้องขอสิทธิ์ downloads)
+// import: ผู้ใช้ต้องเลือกไฟล์เอง → ตรวจใน lib/backup.js → แสดงตัวอย่าง → กดยืนยันถึงจะบันทึก
+
+$("exportBtn").addEventListener("click", async () => {
+  try {
+    const now = new Date();
+    const data = buildBackup(await getSettings(), chrome.runtime.getManifest().version, now);
+    const name = backupFileName(now);
+    const blob = new Blob([JSON.stringify(data, null, 2) + "\n"], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = el("a", { href: url, download: name, hidden: true });
+    document.body.append(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 10_000);
+    setMsg($("backupMsg"), t("exportDone", data.sites.length, name), "ok");
+  } catch (err) {
+    setMsg($("backupMsg"), t("exportFailed", err.message), "err");
+  }
+});
+
+let pending = null; // { parsed, fileName } ระหว่างรอผู้ใช้ยืนยัน
+
+$("importBtn").addEventListener("click", () => $("importFile").click());
+
+$("importFile").addEventListener("change", async () => {
+  const input = $("importFile");
+  const file = input.files?.[0];
+  closePreview();
+  if (!file) return;
+  try {
+    if (file.size > MAX_FILE_BYTES) {
+      return setMsg($("backupMsg"), t("importTooLarge", MAX_FILE_BYTES / 1024), "err");
+    }
+    const parsed = parseBackup(await file.text());
+    if (!parsed.ok) return setMsg($("backupMsg"), t(parsed.error, parsed.arg ?? ""), "err");
+    setMsg($("backupMsg"), "");
+    pending = { parsed, fileName: file.name };
+    $("importMerge").checked = true;
+    $("importSettings").checked = true;
+    $("importPreview").hidden = false;
+    renderPreview();
+    $("importPreview").focus();
+  } catch (err) {
+    setMsg($("backupMsg"), t("importFailed", err.message), "err");
+  } finally {
+    input.value = ""; // เลือกไฟล์เดิมซ้ำได้
+  }
+});
+
+const importMode = () => ($("importReplace").checked ? "replace" : "merge");
+const siteKey = (list) => list.map((s) => `${s.domain}:${s.mode}`).sort().join("|");
+
+function renderPreview() {
+  if (!pending) return;
+  const { parsed, fileName } = pending;
+  const plan = planImport(current, parsed.sites, importMode());
+  const withSettings = !!parsed.settings && $("importSettings").checked;
+  const changesSites = plan.mode === "replace" ? siteKey(plan.result) !== siteKey(current) : plan.added.length > 0;
+
+  $("importFileInfo").textContent = parsed.exportedAt
+    ? t("importFileInfoDate", fileName, parsed.exportedAt.toLocaleString(document.documentElement.lang))
+    : t("importFileInfo", fileName);
+
+  let summary;
+  if (plan.tooMany) summary = t("importTooMany", MAX_SITES);
+  else if (plan.mode === "replace") summary = t("importSummaryReplace", plan.result.length, plan.removed, plan.modeChanged);
+  else summary = t("importSummaryMerge", plan.added.length, plan.existing);
+  if (!plan.tooMany && !changesSites && !withSettings) summary += " " + t("importNothing");
+  $("importSummary").textContent = summary;
+  $("importAdded").replaceChildren(...(plan.added.length ? [siteChips(plan.added, 24)] : []));
+
+  $("importSkipped").hidden = !parsed.skipped;
+  $("importSkipped").textContent = t("importSkipped", parsed.skipped);
+
+  // เตือนก่อน: เว็บที่จะกลายเป็นโหมด "ลบทันที" จะถูกลบประวัติเก่าทั้งหมดทันที (ย้อนกลับไม่ได้)
+  $("importWarn").hidden = plan.willSweep.length === 0;
+  $("importWarnText").textContent = t("importVisitWarn", plan.willSweep.length);
+  $("importWarnSites").replaceChildren(siteChips(plan.willSweep.map((domain) => ({ domain, mode: "visit" })), 24));
+
+  $("importSettingsRow").hidden = !parsed.settings;
+  $("importConfirm").disabled = plan.tooMany || (!changesSites && !withSettings);
+}
+
+function closePreview() {
+  pending = null;
+  $("importPreview").hidden = true;
+}
+
+for (const id of ["importMerge", "importReplace", "importSettings"]) {
+  $(id).addEventListener("change", renderPreview);
+}
+
+$("importCancel").addEventListener("click", () => {
+  closePreview();
+  $("importBtn").focus();
+});
+
+$("importConfirm").addEventListener("click", async () => {
+  if (!pending) return;
+  const { parsed } = pending;
+  const plan = planImport((await getSettings()).sites, parsed.sites, importMode()); // ใช้รายการล่าสุดจริง
+  if (plan.tooMany) return renderPreview();
+  // parsed.settings มาจาก pickSettings: มีเฉพาะ key ที่รู้จักและค่าผ่านการตรวจแล้ว
+  const imported = parsed.settings && $("importSettings").checked ? parsed.settings : {};
+  try {
+    const prev = await getSettings();
+    const undo = { sites: prev.sites };
+    for (const key of Object.keys(imported)) undo[key] = prev[key];
+    await saveSettings({ ...imported, sites: plan.result });
+    closePreview();
+    const langNote = imported.lang && imported.lang !== prev.lang ? " " + t("importLangNote") : "";
+    showToast(t("importDone", plan.result.length) + langNote, () => saveSettings(undo));
+  } catch (err) {
+    setMsg($("backupMsg"), t("importFailed", err.message), "err");
+  }
+});
+
 // ---------- render ----------
 
 // ส่วนที่มีชื่อเว็บ — วาดใหม่ตอนสลับซ่อน/แสดง
@@ -219,6 +339,7 @@ function renderNames() {
     current.length ? siteChips(current) : el("span", { class: "muted" }, t("noSites"))
   );
   renderList();
+  renderPreview();
 }
 
 async function render() {
@@ -227,6 +348,7 @@ async function render() {
   badgeToggle.checked = showBadge;
   notifyToggle.checked = notify;
   hideToggle.checked = settings.hideNames;
+  $("lang").value = settings.lang; // อาจเปลี่ยนจากการนำเข้า (ภาษาหน้านี้เปลี่ยนตอนเปิดใหม่)
   // เพิ่งเปิดสวิตช์/เปิดหน้าใหม่ → เริ่มที่ซ่อนเสมอ; ปิดสวิตช์ → แสดงชื่อ
   if (settings.hideNames !== hideNames) setHidden(settings.hideNames);
   hideNames = settings.hideNames;

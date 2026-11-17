@@ -69,6 +69,7 @@ Features
 • "Delete now" button that clearly lists which sites will be cleaned and reports how many items were removed per site.
 • Optional counter on the toolbar icon, and an optional popup that drops down to show what was just cleaned, then closes itself.
 • Hide site names: the list shows •••••• instead of names, so people looking at your screen can't see them. Click the eye to peek.
+• Backup: export your list and settings to a file and import them on another computer, with a preview and Undo.
 • Clean, simple interface in English and Thai, with light and dark themes.
 
 Privacy first
@@ -114,6 +115,7 @@ site history
 • ปุ่ม "ลบเดี๋ยวนี้" บอกชัดว่าจะลบเว็บไหนบ้าง และสรุปจำนวนที่ลบแยกรายเว็บ
 • ตัวเลขบนไอคอน และ popup แจ้งผลการลบที่เลื่อนลงมาแล้วปิดเอง (เปิด/ปิดได้)
 • ซ่อนชื่อเว็บ: รายการแสดงเป็น •••••• แทนชื่อเว็บ กันคนแอบมองจอ กดรูปตาเพื่อดูชั่วคราว
+• สำรองข้อมูล: ส่งออกรายการเว็บและการตั้งค่าเป็นไฟล์ แล้วนำเข้าในเครื่องอื่นได้ มีหน้าตัวอย่างก่อนนำเข้าและปุ่มย้อนกลับ
 • หน้าตาเรียบง่าย รองรับภาษาไทยและอังกฤษ ทั้งธีมสว่างและมืด
 
 ความเป็นส่วนตัวมาก่อน
@@ -151,6 +153,7 @@ How to test:
 4. "Delete now" in the popup or options removes all past history of the listed sites and shows a per-site count.
 5. Optional: enable "Show a popup when deleting" and click "Test popup". It uses chrome.action.openPopup() and only opens while the browser window is focused.
 6. New in 1.3.0: turn on "Hide site names" in the Site list section. Names in the options page and popup show as dots; the eye button reveals them temporarily. This is display-only and does not change deletion.
+7. New in 1.3.0: "Backup" section in options. "Export to file" saves a JSON file locally (Blob + download link, no downloads permission, nothing sent anywhere). "Import from file" reads a user-selected JSON file, validates it, and shows a preview; nothing is saved until "Import" is clicked, and Undo is offered afterwards.
 
 The extension was renamed from "TabSweep" to "History Clean" in 1.3.0. Functionality and permissions are unchanged.
 
